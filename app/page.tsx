@@ -15,14 +15,14 @@ export default function HomePage() {
       <Navbar />
       <Hero />
       <About />
-      <section className="mx-auto max-w-[1240px] px-6 pb-12 lg:px-8 bg-white">
+      <section className="mx-auto max-w-[1240px] px-6 pb-12 lg:px-8">
         <Services />
       </section>
       <Products />
       <WhyUs />
       <Stats />
       <Contact />
-      <div className="overflow-hidden border-t border-line bg-white py-12">
+      <div className="overflow-hidden border-t border-line bg-ink py-12">
         <div className="marquee whitespace-nowrap text-[clamp(3rem,9vw,7rem)] font-light tracking-[-.04em] text-transparent [-webkit-text-stroke:1.5px_#61A5C2]">
           Websites • Software • POS • SMS • Hardware • Websites • Software • POS • SMS • Hardware •
         </div>
