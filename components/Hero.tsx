@@ -36,7 +36,7 @@ export default function Hero() {
         const w = canvas.offsetWidth;
         const h = canvas.offsetHeight;
         ctx.clearRect(0, 0, w, h);
-        ctx.fillStyle = "#89C2D9";
+        ctx.fillStyle = "rgba(227,242,253,0.2)"; /* COLOR CHANGE: --b50 with alpha for dot grid */
         for (let line = 0; line < 16; line++) {
           const offset = line * h * .028;
           for (let i = 0; i < w; i += w / (window.innerWidth < 700 ? 70 : 150)) {
@@ -66,14 +66,16 @@ export default function Hero() {
   }, []);
 
   return (
-    <section id="top" className="hero relative isolate grid min-h-screen place-items-center overflow-hidden bg-[radial-gradient(circle_at_50%_40%,#014f86_0%,#013a63_45%,#012a4a_100%)] text-center">
+    <section id="top" className="hero relative isolate grid min-h-screen place-items-center overflow-hidden text-center" style={{ 
+      background: 'radial-gradient(circle at 50% 40%, var(--b700) 0%, var(--b900) 45%, var(--b900) 100%)' 
+    }}>
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full opacity-70" aria-hidden="true" />
       <div className="relative px-6 py-32">
-        <h1 className="display text-[clamp(2.8rem,8vw,6rem)] text-mist">
+        <h1 className="display text-[clamp(2.8rem,8vw,6rem)]" style={{ color: 'var(--b50)' }}>
           <span className="block animate-[sharp_1.6s_.4s_both]">Innovative software.</span>
-          <span className="block animate-[sharp_1.6s_.8s_both]">Made for your business.</span>
+          <span className="block animate-[sharp_1.6s_.8s_both]" style={{ color: 'var(--b200)' }}>Made for your business.</span>
         </h1>
-        <p className="mx-auto mb-9 mt-7 max-w-[460px] text-base text-mist/80">{site.description}</p>
+        <p className="mx-auto mb-9 mt-7 max-w-[460px] text-base" style={{ color: 'var(--b100)' }}>{site.description}</p>
         <div className="flex flex-wrap justify-center gap-3">
           <button
             type="button"
@@ -85,7 +87,7 @@ export default function Hero() {
           </button>
         </div>
       </div>
-      <div className="absolute bottom-6 left-7 right-7 hidden justify-between text-[11px] uppercase tracking-[.14em] text-mist/65 sm:flex">
+      <div className="absolute bottom-6 left-7 right-7 hidden justify-between text-[11px] uppercase tracking-[.14em] sm:flex" style={{ color: 'var(--b100)', opacity: 0.65 }}>
         <span>Built in Jaffna. Built to scale.</span>
         <span className="inline-flex items-center gap-2">Scroll to discover <ArrowDown size={14} /></span>
       </div>
