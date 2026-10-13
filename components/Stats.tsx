@@ -1,0 +1,2 @@
+import { stats } from "@/lib/data";
+export default function Stats() { return <section className="mx-auto grid max-w-[1180px] grid-cols-2 gap-8 px-6 pb-24 text-center sm:grid-cols-4 lg:px-8">{stats.map((stat) => <div key={stat.label}><div className="text-4xl font-light text-cyan sm:text-5xl">{stat.value}</div><div className="eyebrow mt-2">{stat.label}</div></div>)}</section>; }
