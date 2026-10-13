@@ -22,8 +22,8 @@ export default function HomePage() {
       <WhyUs />
       <Stats />
       <Contact />
-      <div className="overflow-hidden border-t py-12" style={{ background: 'var(--b900)', borderColor: 'var(--b800)' }}>
-        <div className="marquee whitespace-nowrap text-[clamp(3rem,9vw,7rem)] font-light tracking-[-.04em] text-transparent" style={{ WebkitTextStroke: '1.5px var(--b300)' }}>
+      <div className="overflow-hidden border-t border-line bg-ink py-12">
+        <div className="marquee whitespace-nowrap text-[clamp(3rem,9vw,7rem)] font-light tracking-[-.04em] text-transparent [-webkit-text-stroke:1.5px_#61A5C2]">
           Websites • Software • POS • SMS • Hardware • Websites • Software • POS • SMS • Hardware •
         </div>
       </div>

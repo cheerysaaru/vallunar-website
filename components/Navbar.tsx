@@ -80,7 +80,7 @@ export default function Navbar() {
           ))}
         </div>
 
-        <ContactTrigger className="fill-btn nav-contact focus-ring" aria-label="Contact us">
+        <ContactTrigger className="fill-btn focus-ring" aria-label="Contact us">
           Contact Us
         </ContactTrigger>
 
