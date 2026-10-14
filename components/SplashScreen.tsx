@@ -37,8 +37,11 @@ export default function SplashScreen() {
     const MAX_DISPLAY = 7000;
     let exitTimer: ReturnType<typeof setTimeout>;
     let loadResolved = false;
+    let exitStarted = false;
 
     const startExit = () => {
+      if (exitStarted) return;
+      exitStarted = true;
       setIsExiting(true);
       setTimeout(() => {
         setShowSplash(false);
@@ -59,11 +62,19 @@ export default function SplashScreen() {
     const startTime = Date.now();
     window.addEventListener("load", onLoad);
 
-    exitTimer = setTimeout(() => {
-      if (!loadResolved) {
-        window.removeEventListener("load", onLoad);
+    // Check if we can exit now (load already done)
+    if (document.readyState === "complete") {
+      loadResolved = true;
+      const elapsed = Date.now() - startTime;
+      if (elapsed >= MIN_DISPLAY) {
         startExit();
       }
+    }
+
+    // Maximum cap - ALWAYS exit by MAX_DISPLAY
+    exitTimer = setTimeout(() => {
+      window.removeEventListener("load", onLoad);
+      startExit();
     }, MAX_DISPLAY);
 
     return () => {
