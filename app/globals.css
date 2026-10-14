@@ -3,320 +3,819 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
   --ease: cubic-bezier(.65,0,.35,1);
   --soft: cubic-bezier(.22,1,.36,1);
+  
+  /* Notch navbar variables - INVERTED (light nav) */
+  --notch-height: 54px;
+  --notch-radius: 22px;
+  --notch-flare: 20px;
+  --notch-gap: 28px;
+  --notch-padding-x: 16px;
+  --notch-bg: #ffffff;
+  --notch-text: var(--text-dark);
+  --notch-text-muted: var(--text-muted);
+  --notch-text-white: #ffffff;
+  --notch-panel-bg: #ffffff;
+  --notch-panel-hover: var(--surface-light);
+  --notch-hamburger-bg: var(--surface-light);
+  --notch-hamburger-size: 34px;
+  --notch-logo-size: 30px;
+  --notch-logo-radius: 9px;
+  --notch-cta-height: 34px;
+  --notch-cta-radius: 9px;
+  --notch-font: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --notch-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  
+  /* Brand color palette */
+  --navy: #002b52;
+  --navy-dark: #00487d;
+  --navy-darker: #001f3d;
+  --white: #ffffff;
+  --text-dark: #0a2a4a;
+  --text-muted: #4a6a82;
+  --text-light: #6b8aa3;
+  --mid-blue: #2f7fb0;
+  --mid-blue-hover: #1e6ba3;
+  --light-tint: #eef5fa;
+  --border-light: #d9e6ef;
+  --surface-white: #ffffff;
+  --surface-light: #f3f8fb;
+  --accent-cyan: #61a5c2;
+  --focus-ring: #2f7fb0;
+  --focus-ring-offset: #ffffff;
+  --error: #dc2626;
+  --error-bg: #fef2f2;
+  --success: #16a34a;
+  --success-bg: #f0fdf4;
+  --whats-app: #25d366;
+  --bg-warm: #f8f5f0;
+  --warm: #b3541e;
+  
   --nav-height: 64px;
   --nav-gap: 16px;
   --nav-max-width: 1000px;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; background: #012a4a; color: #a9d6e5; font-family: var(--font-dm-sans), sans-serif; }
+section[id] { scroll-margin-top: calc(var(--notch-height) + 14px); }
+body { margin: 0; background: var(--bg-warm); color: #0a2a4a; font-family: var(--font-inter), sans-serif; font-size: 16px; }
 a { color: inherit; text-decoration: none; }
-::selection { background: #a9d6e5; color: #012a4a; }
+::selection { background: #a9d6e5; color: #0a2a4a; }
 
 @layer utilities {
-  .eyebrow { @apply text-[10px] font-medium uppercase tracking-[0.2em] text-mist/70; }
-  .display { @apply font-light leading-[.98] tracking-[-.045em]; }
-  .focus-ring { @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-mist focus-visible:ring-offset-2 focus-visible:ring-offset-ink; }
+  .eyebrow { @apply font-medium uppercase tracking-[0.14em]; font-family: var(--font-dm-mono), ui-monospace, monospace; font-size: 12px; color: var(--text-muted); }
+  .display { @apply leading-[.98] tracking-[-.045em]; font-family: var(--font-plus-jakarta), var(--font-inter), sans-serif; font-weight: 600; }
+  .focus-ring { @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--focus-ring-offset)]; }
+  .fill-btn { @apply inline-flex items-center justify-center gap-2 rounded-full bg-[var(--mid-blue)] text-white font-medium transition hover:bg-[var(--mid-blue-hover)] hover:shadow-lg; }
 }
 
+/* Headings must not be ultra-thin */
 .contour-lines { background-image: repeating-radial-gradient(ellipse at 45% 50%, transparent 0 28px, rgba(169,214,229,.22) 29px 30px, transparent 31px 58px); transform: rotate(-11deg) scale(1.35); mask-image: linear-gradient(to right, transparent, black 18%, black 82%, transparent); }
 .marquee { animation: marquee 28s linear infinite; }
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
+/* Hero — interactive headline chars */
+@keyframes hero-char-in {
+  from { opacity: 0; transform: translateY(.45em) rotate(3deg); filter: blur(8px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+.hero-char {
+  display: inline-block;
+  white-space: pre;
+  animation: hero-char-in .65s var(--soft) backwards;
+  animation-delay: calc(.35s + var(--i, 0) * .03s);
+  transition: transform .35s var(--soft), color .35s var(--ease), text-shadow .35s var(--ease);
+}
+.hero-char:hover {
+  transform: translateY(-.14em) scale(1.15) rotate(-4deg);
+  color: var(--accent-cyan);
+  text-shadow: 0 12px 28px rgba(97, 165, 194, .55);
+}
+
+/* Hero — content below the headline fades in after the headline animation */
+@keyframes hero-fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+.hero-sub { animation: hero-fade-up .8s var(--soft) 2s backwards; }
+.hero-cta-wrap { animation: hero-fade-up .8s var(--soft) 2.25s backwards; }
+.hero-bottom { animation: hero-fade-up .8s var(--soft) 2.5s backwards; }
+
+/* Cookie banner — fade in when it appears */
+.consent-banner { animation: hero-fade-up .55s var(--soft) both; }
+
+/* Hero — floating CTA */
+.hero-float { display: inline-flex; animation: hero-bob 3.6s ease-in-out infinite; }
+@keyframes hero-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+
+/* Hero title — professional display face (Plus Jakarta Sans) */
+.hero-title {
+  font-family: var(--font-plus-jakarta), var(--font-inter), sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  text-shadow: 0 2px 30px rgba(5, 33, 74, 0.5);
+}
+
+/* ============================================================
+   HERO BACKGROUND LAYERS (bottom → top, all z-index:-1)
+   ============================================================ */
+
+/* L1 — base gradient */
+.hero-bg-base {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(180deg, #05214a 0%, #0a3a74 55%, #061b3a 100%);
+}
+
+/* L3 — top spotlight */
+.hero-bg-spotlight {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(ellipse 70% 55% at 50% 0%, rgba(144, 202, 249, 0.42), transparent 70%);
+}
+
+/* L4 — three blurred glow blobs, drifting slowly */
+.hero-bg-blobs {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.hero-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  will-change: transform;
+}
+/* top-left blob */
+.hero-blob-a {
+  width: 46vmax;
+  height: 46vmax;
+  left: -14vmax;
+  top: -16vmax;
+  background: rgba(33, 150, 243, 0.55);
+  animation: hero-drift-a 22s ease-in-out infinite alternate;
+}
+/* right blob */
+.hero-blob-b {
+  width: 40vmax;
+  height: 40vmax;
+  right: -14vmax;
+  top: 12vmax;
+  background: rgba(100, 181, 246, 0.38);
+  animation: hero-drift-b 25s ease-in-out -8s infinite alternate;
+}
+/* bottom-center blob */
+.hero-blob-c {
+  width: 52vmax;
+  height: 52vmax;
+  left: 18%;
+  bottom: -30vmax;
+  background: rgba(21, 101, 192, 0.7);
+  animation: hero-drift-c 20s ease-in-out -4s infinite alternate;
+}
+@keyframes hero-drift-a {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(6vmax, 4vmax, 0) scale(1.18); }
+}
+@keyframes hero-drift-b {
+  from { transform: translate3d(0, 0, 0) scale(1.1); }
+  to { transform: translate3d(-5vmax, 6vmax, 0) scale(1); }
+}
+@keyframes hero-drift-c {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(-6vmax, -4vmax, 0) scale(1.15); }
+}
+
+/* L5 — faint grid, masked to fade at the edges */
+.hero-bg-grid {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(144, 202, 249, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(144, 202, 249, 0.08) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 45%, #000 25%, transparent 78%);
+  mask-image: radial-gradient(ellipse 75% 65% at 50% 45%, #000 25%, transparent 78%);
+}
+
+/* L6 — dot-wave canvas */
+.hero-bg-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+/* L7 — cursor glow, follows --mx/--my, fades with --gs */
+.hero-bg-cursor {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    circle 220px at var(--mx, 50%) var(--my, 50%),
+    rgba(144, 202, 249, 0.22),
+    transparent 70%
+  );
+  opacity: var(--gs, 0);
+  transition: opacity 0.4s;
+}
+
+/* L8 — film grain */
+.hero-bg-grain {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* L9 — bottom fade into the next section */
+.hero-bg-fade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 70%, rgba(6, 27, 58, 0.85) 100%);
+}
+
+/* Mobile: smaller blur on blobs + tighter grid */
+@media (max-width: 640px) {
+  .hero-blob { filter: blur(50px); }
+  .hero-bg-grid { background-size: 40px 40px; }
+}
+
+/* Reduced motion: stop blob drift, static layers only */
+@media (prefers-reduced-motion: reduce) {
+  .hero-blob { animation: none !important; }
+  .hero-bg-cursor { transition: none; }
+}
+
+.hero-cta {
+  min-height: 48px;
+  padding: 0 32px;
+  font-size: 15px;
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #ffffff;
+}
+
+.hero-cta::before {
+  background: #ffffff;
+}
+
+.hero-cta:hover {
+  color: var(--navy-darker);
+  box-shadow: 0 16px 36px rgba(255, 255, 255, 0.3);
+}
+
+.hero-cta:hover > span {
+  color: var(--navy-darker);
+}
+
+.hero-cta:focus-visible { outline: 2px solid var(--accent-cyan); outline-offset: 3px; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: .01ms !important;
+    animation-delay: 0s !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: .01ms !important;
   }
 }
 
-/* CHANGE 1 & 4: Floating nav pill & floating-fill button */
-.nav-pill {
+/* Notch Navbar Styles */
+.notch-nav {
   position: fixed;
-  top: var(--nav-gap);
+  top: 0;
   left: 50%;
-  transform: translateX(-50%) translateY(-120%);
-  z-index: 40;
-  width: calc(100% - 2 * var(--nav-gap));
-  max-width: var(--nav-max-width);
-  height: var(--nav-height);
-  border-radius: 9999px;
-  background: rgba(1, 42, 74, 0.92);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(169, 214, 229, 0.18);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  transform: translateX(-50%);
+  z-index: 100;
+  height: var(--notch-height);
+  padding: 0 var(--notch-padding-x);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
-  gap: 16px;
-  animation: navSlideDown 0.9s var(--soft) forwards;
+  gap: var(--notch-gap);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 0 0 var(--notch-radius) var(--notch-radius);
+  box-shadow: none;
+  font-family: var(--notch-font);
+  letter-spacing: -0.02em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition:
+    transform .4s cubic-bezier(.32,.72,0,1),
+    background-color .4s cubic-bezier(.32,.72,0,1),
+    border-color .4s cubic-bezier(.32,.72,0,1),
+    box-shadow .4s cubic-bezier(.32,.72,0,1),
+    height .4s cubic-bezier(.32,.72,0,1),
+    border-radius .4s cubic-bezier(.32,.72,0,1),
+    backdrop-filter .4s cubic-bezier(.32,.72,0,1),
+    -webkit-backdrop-filter .4s cubic-bezier(.32,.72,0,1);
 }
 
-@keyframes navSlideDown {
-  to { transform: translateX(-50%) translateY(0); }
+/* Hide on scroll down, return on scroll up */
+.notch-nav.nav-hidden {
+  transform: translate(-50%, calc(-100% - var(--notch-flare) - 8px));
 }
 
-.nav-pill.hidden-down {
-  transform: translateX(-50%) translateY(-120%);
-  transition: transform 0.35s var(--ease);
+/* Solid state — pages without a dark hero (static, top of page) */
+.notch-nav.solid {
+  background: rgba(0, 31, 61, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.28);
 }
 
-.nav-pill.visible-up {
-  transform: translateX(-50%) translateY(0);
-  transition: transform 0.35s var(--soft);
+/* Ear flares - concave curves on top corners */
+.notch-nav::before,
+.notch-nav::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: var(--notch-flare);
+  height: var(--notch-flare);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .4s cubic-bezier(.32, .72, 0, 1);
 }
 
-.nav-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  color: #a9d6e5;
+.notch-nav::before {
+  left: calc(var(--notch-flare) * -1);
+  background: radial-gradient(circle at 0 100%, transparent var(--notch-flare), rgba(0, 31, 61, 0.88) calc(var(--notch-flare) + 0.5px));
+}
+
+.notch-nav::after {
+  right: calc(var(--notch-flare) * -1);
+  background: radial-gradient(circle at 100% 100%, transparent var(--notch-flare), rgba(0, 31, 61, 0.88) calc(var(--notch-flare) + 0.5px));
+}
+
+.notch-nav.solid::before,
+.notch-nav.solid::after {
+  opacity: 1;
+}
+
+/* Scrolled state — Apple-style frosted glass floating pill (scroll > 10px) */
+.notch-nav.scrolled {
+  background: rgba(0, 0, 0, 0.55);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+  transform: translate(-50%, 12px);
+  border-radius: 22px;
+  height: 48px;
+}
+
+.notch-nav.scrolled::before,
+.notch-nav.scrolled::after {
+  opacity: 0;
+}
+
+@supports not ((backdrop-filter: blur(2px)) or (-webkit-backdrop-filter: blur(2px))) {
+  .notch-nav.scrolled {
+    background: rgba(0, 0, 0, 0.85);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notch-nav,
+  .notch-nav::before,
+  .notch-nav::after {
+    transition: none !important;
+  }
+}
+
+/* Logo */
+.notch-logo {
   text-decoration: none;
+  color: #ffffff;
   flex-shrink: 0;
 }
 
-.nav-links {
+.logo-text {
+  font-size: 17px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+/* Desktop Links (position:relative hosts the sliding pill) */
+.notch-links {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex: 1;
-  justify-content: center;
+  gap: var(--notch-gap);
 }
 
-.nav-link {
-  position: relative;
-  padding: 8px 14px;
+.notch-link {
   font-size: 14px;
-  color: #a9d6e5;
-  opacity: 0.85;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.82);
   text-decoration: none;
-  border-radius: 9999px;
-  transition: opacity 0.2s var(--ease), color 0.2s var(--ease);
+  /* padding lives on the <a> so the pill covers it too (FIT RULE) */
+  padding: 7px 10px;
+  transition: color .4s var(--soft);
 }
 
-.nav-link::after {
-  content: "";
-  position: absolute;
-  bottom: 4px;
-  left: 14px;
-  right: 14px;
-  height: 2px;
-  background: #61a5c2;
-  border-radius: 2px;
-  transform: scaleX(0);
-  transform-origin: center;
-  transition: transform 0.4s var(--soft);
+.notch-link:hover,
+.notch-link:focus-visible {
+  color: #ffffff;
 }
 
-.nav-link:hover {
-  opacity: 1;
-  color: #a9d6e5;
+.notch-link:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
-.nav-link:hover::after {
-  transform: scaleX(1);
-}
-
-.nav-link:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px #a9d6e5, 0 0 0 4px #012a4a;
-}
-
-/* Floating-fill button effect */
-.fill-btn {
-  position: relative;
+/* CTA Button - uses .fill-btn class for floating fill effect */
+.notch-cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 48px;
-  padding: 0 28px;
+  min-height: 40px;
+  padding: 0 24px;
   font-size: 14px;
   font-weight: 600;
-  letter-spacing: 0.02em;
-  color: #a9d6e5;
-  background: transparent;
-  border: 2px solid #61a5c2;
-  border-radius: 9999px;
+  color: var(--navy-darker);
+  border-radius: var(--notch-cta-radius);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.notch-cta:focus-visible {
+  outline: 2px solid var(--accent-cyan);
+  outline-offset: 3px;
+}
+
+/* Solid state CTA — same white base; blob covers it at rest */
+.notch-nav.solid .notch-cta {
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.notch-nav.solid .notch-cta::before {
+  background: #ffffff;
+}
+
+.notch-nav.solid .notch-cta:hover {
+  color: var(--navy-darker);
+}
+
+/* ============================================================
+   EFFECT 2: THREE DOTS TO CROSS (mobile menu button, <820px)
+   Three dots collapse, then two bars grow into an X.
+   Closing reverses: bars shrink first, dots reappear after .2s.
+   ============================================================ */
+.dots {
+  display: none;
+  position: relative;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: none;
+  border: 0;
   cursor: pointer;
-  overflow: hidden;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.dots:focus-visible {
+  outline: 2px solid var(--accent-cyan);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+.dots i,
+.dots b {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: block;
+}
+
+.dots i {
+  width: 7px;
+  height: 7px;
+  margin: -3.5px;
+  border-radius: 50%;
+  background: currentColor;
+  transition: transform .25s var(--ease) .2s, opacity 0s linear .2s;
+}
+
+.dots i:nth-of-type(1) { transform: translateY(-14px); }
+.dots i:nth-of-type(2) { transform: none; }
+.dots i:nth-of-type(3) { transform: translateY(14px); }
+
+.dots b {
+  width: 24px;
+  height: 3px;
+  margin: -1.5px -12px;
+  border-radius: 3px;
+  background: currentColor;
+  transform: rotate(45deg) scaleX(0);
+  transition: transform .2s var(--ease);
+}
+
+.dots b:nth-of-type(2) { transform: rotate(-45deg) scaleX(0); }
+
+.dots.open i {
+  transform: none;
+  opacity: 0;
+  transition: transform .22s var(--ease), opacity 0s linear .22s;
+}
+
+.dots.open b {
+  transform: rotate(45deg) scaleX(1);
+  transition: transform .2s var(--ease) .2s;
+}
+
+.dots.open b:nth-of-type(2) { transform: rotate(-45deg) scaleX(1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .dots i,
+  .dots b,
+  .notch-mobile-panel {
+    transition-duration: .01s !important;
+    transition-delay: 0s !important;
+  }
+}
+
+/* ============================================================
+   EFFECT 1: FLOATING FILL BUTTON
+   Accent blob floats up from the bottom on hover / :focus-visible.
+   Default = light backgrounds (dark outline + dark blob).
+   Dark backgrounds override below (.hero-cta, .notch-nav .notch-cta).
+   ============================================================ */
+.fill-btn {
+  position: relative;
+  z-index: 0;
   isolation: isolate;
-  transition: transform 0.2s var(--soft), box-shadow 0.2s var(--soft), color 0.3s var(--soft);
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 24px;
+  border-radius: 9999px;
+  border: 1.5px solid var(--navy);
+  background: transparent;
+  color: var(--text-dark);
+  font-family: var(--notch-font);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform .6s var(--soft),
+    box-shadow .6s var(--soft),
+    color .5s var(--soft);
 }
 
 .fill-btn::before {
   content: "";
   position: absolute;
-  inset: 0;
-  z-index: -1;
+  left: -10%;
   width: 120%;
   height: 220%;
-  border-radius: 50%;
-  background: #61a5c2;
   top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  transition: top 0.7s var(--soft);
+  border-radius: 50%;
+  background: var(--navy);
+  z-index: -1;
+  transition: top .7s var(--soft);
 }
 
-.fill-btn:hover {
+.fill-btn > span {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: color .5s var(--soft);
+}
+
+.fill-btn:hover,
+.fill-btn:focus-visible {
+  color: #ffffff;
   transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(97, 165, 194, 0.35);
-  color: #012a4a;
+  box-shadow: 0 12px 22px rgba(0, 0, 0, .25);
 }
 
-.fill-btn:hover::before {
+.fill-btn:hover::before,
+.fill-btn:focus-visible::before {
   top: -60%;
 }
 
 .fill-btn:active {
-  transform: translateY(-1px) scale(0.97);
-  transition-duration: 0.05s;
+  transform: translateY(-1px) scale(.97);
 }
 
 .fill-btn:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px #a9d6e5, 0 0 0 4px #012a4a, 0 12px 32px rgba(97, 165, 194, 0.35);
+  outline: 2px solid var(--navy);
+  outline-offset: 3px;
 }
 
-/* CHANGE 2: Three dots menu */
-.menu-toggle {
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  position: relative;
-  border-radius: 9999px;
+/* Hero CTA (dark hero): light outline + light blob, text flips dark on hover */
+.hero-cta {
+  color: #ffffff;
+  border-color: var(--accent-cyan);
 }
 
-.menu-toggle:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px #a9d6e5, 0 0 0 4px #012a4a;
+.hero-cta::before {
+  background: var(--accent-cyan);
 }
 
-.menu-dots {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  transition: opacity 0.15s var(--ease);
+.hero-cta:hover,
+.hero-cta:focus-visible {
+  color: var(--navy-darker);
 }
 
-.menu-dot {
-  width: 24px;
-  height: 3px;
-  border-radius: 3px;
-  background: #a9d6e5;
-  transform-origin: center;
-  transition: transform 0.22s var(--ease), opacity 0.15s var(--ease);
+.hero-cta:focus-visible {
+  outline-color: var(--accent-cyan);
 }
 
-.menu-toggle[aria-expanded="true"] .menu-dot:nth-child(1) {
-  transform: translateY(9px) rotate(45deg);
-}
-
-.menu-toggle[aria-expanded="true"] .menu-dot:nth-child(2) {
-  opacity: 0;
-}
-
-.menu-toggle[aria-expanded="true"] .menu-dot:nth-child(3) {
-  transform: translateY(-9px) rotate(-45deg);
-}
-
-.menu-cross {
+/* Sliding pill — animation-only. Reuses the Contact button's white bg + radius.
+   Fits the active link exactly (width/height from getBoundingClientRect). */
+.blob {
+  --r: var(--notch-cta-radius);
   position: absolute;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  left: 0;
+  top: 0;
+  z-index: 0;
   pointer-events: none;
+  background: #ffffff;
+  border-radius: var(--r);
+  opacity: 0;
+  transition:
+    transform .6s var(--soft),
+    width .6s var(--soft),
+    height .6s var(--soft),
+    opacity .2s linear;
 }
 
-.menu-cross-bar {
-  width: 24px;
-  height: 3px;
-  border-radius: 3px;
-  background: #a9d6e5;
-  transform-origin: center;
-  transform: scaleX(0);
-  transition: transform 0.2s var(--soft) 0.22s;
+.blob.ready {
+  opacity: 1;
 }
 
-.menu-cross-bar:nth-child(1) { transform: scaleX(0) rotate(45deg); }
-.menu-cross-bar:nth-child(2) { transform: scaleX(0) rotate(-45deg); }
-
-.menu-toggle[aria-expanded="true"] .menu-cross-bar {
-  transform: scaleX(1);
+.notch-link,
+.notch-cta {
+  position: relative;
+  z-index: 1;
 }
 
-.mobile-menu-panel {
+/* Link text color flips to the Contact button's text color while the pill is under it */
+.notch-link.is-active {
+  color: var(--navy-darker);
+}
+
+.notch-nav .notch-cta {
+  color: #ffffff;
+  background: transparent;
+  border-color: transparent;
+}
+
+.notch-nav .notch-cta.is-active {
+  color: var(--navy-darker);
+}
+
+.notch-nav .notch-cta:hover,
+.notch-nav .notch-cta:focus-visible {
+  color: var(--navy-darker);
+}
+
+.notch-nav .notch-cta:focus-visible {
+  outline-color: var(--accent-cyan);
+}
+
+/* Reduced motion: highlight snaps instead of gliding */
+@media (prefers-reduced-motion: reduce) {
+  .blob,
+  .notch-link,
+  .notch-nav .notch-cta {
+    transition-duration: .01s;
+  }
+}
+
+/* Legacy Hamburger Button (hidden) */
+.notch-hamburger {
+  display: none;
+}
+
+/* Mobile Panel */
+.notch-mobile-panel {
   position: fixed;
-  top: calc(var(--nav-height) + var(--nav-gap));
-  left: var(--nav-gap);
-  right: var(--nav-gap);
-  max-width: var(--nav-max-width);
-  margin: 0 auto;
-  border-radius: 20px;
-  background: rgba(1, 42, 74, 0.98);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(169, 214, 229, 0.18);
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
-  padding: 24px;
+  top: calc(var(--notch-height) + 8px);
+  left: 16px;
+  right: 16px;
+  background: var(--notch-panel-bg);
+  border-radius: var(--notch-radius);
+  padding: 8px;
+  box-shadow: var(--notch-shadow);
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-16px);
+  transform: translateY(-12px);
   transition: opacity 0.5s var(--soft), transform 0.5s var(--soft), visibility 0s 0.5s;
-  z-index: 35;
+  z-index: 99;
 }
 
-.mobile-menu-panel.open {
+.notch-mobile-panel.open {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
   transition: opacity 0.5s var(--soft), transform 0.5s var(--soft);
 }
 
-.mobile-menu-link {
+.notch-mobile-link {
   display: block;
-  padding: 16px 20px;
-  font-size: 18px;
+  padding: 12px 16px;
+  font-size: 15px;
   font-weight: 500;
-  color: #a9d6e5;
+  color: var(--notch-text);
+  text-decoration: none;
   border-radius: 12px;
-  transition: background 0.2s var(--ease), color 0.2s var(--ease);
+  transition: background 200ms var(--ease), color 200ms var(--ease);
 }
 
-.mobile-menu-link:hover {
-  background: rgba(169, 214, 229, 0.1);
-  color: #a9d6e5;
+.notch-mobile-link:hover,
+.notch-mobile-link:focus-visible {
+  background: var(--notch-panel-hover);
+  color: var(--notch-text);
 }
 
-.mobile-menu-link:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px #a9d6e5, 0 0 0 4px #012a4a;
+.notch-mobile-link:focus-visible {
+  outline: 2px solid var(--notch-text);
+  outline-offset: 2px;
 }
 
+.notch-mobile-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 16px;
+  margin-top: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--notch-text-white);
+  background: var(--notch-text);
+  border-radius: var(--notch-cta-radius);
+  text-decoration: none;
+  transition: transform 200ms var(--soft), box-shadow 200ms var(--ease), background 200ms var(--ease);
+}
+
+.notch-mobile-cta:hover {
+  transform: scale(1.02);
+  background: #000;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.notch-mobile-cta:focus-visible {
+  outline: 2px solid var(--notch-text);
+  outline-offset: 2px;
+}
+
+/* Mobile styles */
 @media (max-width: 820px) {
-  .menu-toggle { display: flex; }
-  .nav-links { display: none; }
+  .dots { display: flex; }
+  .notch-links { display: none; }
+  .notch-cta { display: none; }
+  .blob { display: none; }
+  .notch-mobile-panel {
+    left: 12px;
+    right: 12px;
+  }
 }
 
-/* CHANGE 5: Plus social button */
+/* Legacy nav-pill styles - kept for reference but not used */
+/* 
+.nav-pill { ... }
+*/
+
+/* ============================================================
+   EFFECT C: FLOATING SOCIAL BUTTON — 48px + round, bottom-right.
+   Fades in after the hero; icons glide out in an arc up and left
+   (radius ~92px, 0.75s, staggered 0.05s) only when open.
+   ============================================================ */
 .plus-social {
   position: fixed;
   bottom: 24px;
@@ -339,30 +838,29 @@ a { color: inherit; text-decoration: none; }
 }
 
 .plus-btn {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: #61a5c2;
+  background: var(--navy);
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #012a4a;
-  box-shadow: 0 8px 24px rgba(97, 165, 194, 0.4);
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 31, 61, 0.35);
   transition: transform 0.6s var(--soft), background 0.2s var(--ease), box-shadow 0.2s var(--ease);
   pointer-events: auto;
   z-index: 10;
 }
 
 .plus-btn:hover {
-  background: #89c2d9;
-  box-shadow: 0 12px 32px rgba(97, 165, 194, 0.5);
+  background: var(--navy-dark);
 }
 
 .plus-btn:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px #a9d6e5, 0 0 0 4px #012a4a, 0 12px 32px rgba(97, 165, 194, 0.5);
+  box-shadow: 0 0 0 2px var(--accent-cyan), 0 0 0 4px var(--navy);
 }
 
 .plus-btn svg {
@@ -376,50 +874,280 @@ a { color: inherit; text-decoration: none; }
 }
 
 .social-icons {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  width: 48px;
+  height: 48px;
   pointer-events: none;
 }
 
 .social-link {
-  width: 40px;
-  height: 40px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 48px;
+  height: 48px;
+  margin: -24px;
   border-radius: 50%;
-  background: rgba(1, 42, 74, 0.92);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(169, 214, 229, 0.18);
+  background: var(--white);
+  border: 1px solid var(--border-light);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #a9d6e5;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  color: var(--navy);
+  box-shadow: 0 6px 20px rgba(0, 31, 61, 0.25);
   opacity: 0;
   transform: translate(0, 0) scale(0.4);
-  transition: opacity 0.75s var(--soft), transform 0.75s var(--soft), background 0.2s var(--ease);
+  transition: opacity 0.75s var(--soft), transform 0.75s var(--soft), background 0.2s var(--ease), color 0.2s var(--ease);
   pointer-events: none;
 }
 
 .social-link svg {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
 }
 
-.plus-social.visible .social-link {
+.plus-social.open .social-link {
   pointer-events: auto;
 }
 
-.plus-social.visible .social-link:nth-child(1) { transition-delay: 0.00s; transform: translate(-62px, -54px) scale(1); opacity: 1; }
-.plus-social.visible .social-link:nth-child(2) { transition-delay: 0.05s; transform: translate(-78px, -20px) scale(1); opacity: 1; }
-.plus-social.visible .social-link:nth-child(3) { transition-delay: 0.10s; transform: translate(-82px, 18px) scale(1); opacity: 1; }
-.plus-social.visible .social-link:nth-child(4) { transition-delay: 0.15s; transform: translate(-72px, 54px) scale(1); opacity: 1; }
+/* arc up and left, radius ~92px */
+.plus-social.open .social-link:nth-child(1) { transition-delay: 0.00s; transform: translate(-16px, -91px) scale(1); opacity: 1; }
+.plus-social.open .social-link:nth-child(2) { transition-delay: 0.05s; transform: translate(-55px, -74px) scale(1); opacity: 1; }
+.plus-social.open .social-link:nth-child(3) { transition-delay: 0.10s; transform: translate(-82px, -42px) scale(1); opacity: 1; }
+.plus-social.open .social-link:nth-child(4) { transition-delay: 0.15s; transform: translate(-92px, 0px) scale(1); opacity: 1; }
 
 .social-link:hover {
-  background: rgba(97, 165, 194, 0.2);
+  background: var(--navy);
+  color: var(--accent-cyan);
 }
 
 .social-link:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px #a9d6e5, 0 0 0 4px #012a4a;
+  box-shadow: 0 0 0 2px var(--accent-cyan), 0 0 0 4px var(--navy);
+}
+
+/* ============================================================
+   Vallunar moon motif (recurring, sparing)
+   ============================================================ */
+.moon {
+  --moon-cut: var(--navy);
+  position: relative;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+  flex-shrink: 0;
+}
+
+.moon::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: var(--moon-cut);
+}
+
+.moon-lg { width: 190px; height: 190px; }
+.moon-lg::after { inset: -7% -14% 18% 22%; }
+
+.moon-sm { width: 22px; height: 22px; }
+.moon-sm::after { inset: -4px -6px 5px 7px; }
+
+.moon-warm { --moon-cut: var(--bg-warm); }
+
+/* Moon phases for How We Work */
+.moon.crescent::after { inset: -4px -6px 5px 35%; }
+.moon.half::after { inset: -4px 50% 5px -4px; }
+.moon.full::after { inset: -4px -6px 5px -6px; background: transparent; }
+
+/* ============================================================
+   Services — indexed list with accent row fill on hover
+   ============================================================ */
+.svc-row {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.4rem 1rem;
+  border-top: 1px solid var(--border-light);
+  color: var(--text-dark);
+  transition: background 0.35s var(--soft), color 0.35s var(--soft), padding-left 0.35s var(--soft);
+}
+
+.svc-row:last-child { border-bottom: 1px solid var(--border-light); }
+
+.svc-num {
+  font-family: var(--font-dm-mono), ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  transition: color 0.35s var(--soft);
+}
+
+.svc-title { font-size: 1.25rem; font-weight: 500; }
+
+.svc-desc { font-size: 14px; color: var(--text-muted); transition: color 0.35s var(--soft); max-width: 34rem; }
+
+.svc-arrow { color: var(--text-muted); transition: transform 0.35s var(--soft), color 0.35s var(--soft); }
+
+.svc-row:hover,
+.svc-row:focus-visible {
+  background: var(--mid-blue);
+  color: #ffffff;
+  padding-left: 1.5rem;
+  outline: none;
+}
+
+.svc-row:hover .svc-num,
+.svc-row:hover .svc-desc,
+.svc-row:hover .svc-arrow,
+.svc-row:focus-visible .svc-num,
+.svc-row:focus-visible .svc-desc,
+.svc-row:focus-visible .svc-arrow {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.svc-row:hover .svc-arrow,
+.svc-row:focus-visible .svc-arrow {
+  transform: translateX(6px);
+}
+
+/* ============================================================
+   FAQ — expandable
+   ============================================================ */
+.faq-item { border-top: 1px solid var(--border-light); }
+.faq-item:last-child { border-bottom: 1px solid var(--border-light); }
+
+.faq-q {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 0.25rem;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+.faq-q:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+.faq-icon {
+  font-family: var(--font-dm-mono), ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.faq-a {
+  padding: 0 0.25rem 1.35rem;
+  max-width: 60ch;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   RESPONSIVE FIXES — Small screens only
+   ============================================================ */
+
+/* NAV — below 900px: full-width bar, logo left, dots right, 16px side padding */
+@media (max-width: 900px) {
+  .notch-nav {
+    width: 100%;
+    left: 0;
+    transform: none;
+    border-radius: 0;
+    padding: 0 16px;
+    justify-content: space-between;
+  }
+
+  /* Keep hide/show slide working without the desktop centering transform */
+  .notch-nav.nav-hidden {
+    transform: translateY(calc(-100% - var(--notch-flare) - 8px));
+  }
+  .notch-nav.scrolled {
+    transform: translateY(12px);
+    border-radius: 0;
+  }
+
+  /* Concave ear flares only make sense on the floating desktop pill */
+  .notch-nav::before,
+  .notch-nav::after {
+    display: none;
+  }
+
+  .notch-logo {
+    flex: 0 0 auto;
+  }
+
+  .notch-links {
+    display: none !important;
+  }
+
+  .notch-cta {
+    display: none !important;
+  }
+
+  .dots {
+    display: flex !important;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+  }
+
+  .notch-link {
+    white-space: nowrap;
+  }
+}
+
+/* HERO — below 640px: tighten heading, balance text, center buttons */
+@media (max-width: 640px) {
+  .hero-title {
+    font-size: clamp(28px, 8.2vw, 44px) !important;
+    line-height: 1.12 !important;
+    text-align: center;
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+    text-wrap: balance;
+  }
+
+  .hero-char {
+    display: inline-block;
+    white-space: pre;
+  }
+
+  .hero-sub {
+    font-size: 16px !important;
+    text-align: center;
+    max-width: 34ch;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-cta-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .hero-cta {
+    max-width: 220px;
+    flex: 1 1 auto;
+  }
+
+  /* Prevent horizontal overflow */
+  html, body {
+    overflow-x: hidden;
+  }
 }

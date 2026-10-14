@@ -61,7 +61,7 @@ export default function PlusSocialButton() {
   return (
     <div
       ref={containerRef}
-      className={`plus-social ${visible ? "visible" : ""}`}
+      className={`plus-social${visible ? " visible" : ""}${open ? " open" : ""}`}
       role="menu"
       aria-label="Social links"
     >

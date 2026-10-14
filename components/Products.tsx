@@ -1,6 +1,70 @@
 "use client";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 import { products } from "@/lib/data";
-import { useRef, useState } from "react";
 
-export default function Products() { const track = useRef<HTMLDivElement>(null); const [active, setActive] = useState(0); const step = () => (track.current?.querySelector("article")?.clientWidth || 640) + 22; const move = (direction: number) => { track.current?.scrollBy({ left: direction * step(), behavior: "smooth" }); setActive((value) => Math.min(products.length - 1, Math.max(0, value + direction))); }; return <section id="products" className="mx-6 overflow-hidden rounded-[32px] bg-mist text-ink lg:mx-auto lg:max-w-[1240px]"><div className="px-7 py-16 sm:px-12 lg:px-14"><div className="flex flex-wrap items-end justify-between gap-8"><div><div className="eyebrow mb-5 !text-ink/60">Our products</div><h2 className="display text-5xl sm:text-6xl">Less hypothetical.<br />More “it works.”</h2></div><div className="flex items-center gap-3 text-xs"><span>{String(active + 1).padStart(2, "0")} / {String(products.length).padStart(2, "0")}</span><button className="focus-ring flex h-11 w-11 items-center justify-center rounded-full border border-ink transition hover:bg-ink hover:text-mist" onClick={() => move(-1)} aria-label="Previous product"><ArrowLeft size={17} /></button><button className="focus-ring flex h-11 w-11 items-center justify-center rounded-full border border-ink transition hover:bg-ink hover:text-mist" onClick={() => move(1)} aria-label="Next product"><ArrowRight size={17} /></button></div></div><div ref={track} className="mt-12 flex snap-x snap-mandatory gap-[22px] overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" tabIndex={0} aria-label="Products">{products.map((product) => <article key={product.name} className={`flex h-[360px] w-[min(640px,82vw)] shrink-0 snap-start flex-col justify-between rounded-[22px] p-8 ${product.tone === "light" ? "bg-cyan" : product.tone === "dark" ? "bg-ink text-mist" : "bg-line text-mist"}`}><div className="flex justify-between gap-4 text-xl font-medium"><span>{product.name}</span><span className="eyebrow !text-inherit/70">{product.category}</span></div><div className="display text-[clamp(2.6rem,6vw,4.5rem)]">{product.headline.split(" ").map((word, index) => <span key={`${word}-${index}`} className="block">{word}</span>)}</div><small className="text-[13px] opacity-85">{product.description}</small></article>)}</div></div></section>; }
+export default function Products() {
+  return (
+    <section id="products" className="bg-white">
+      <div className="mx-auto max-w-[1240px] px-6 py-24 lg:px-8 lg:py-28">
+        <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
+          <div className="max-w-2xl">
+            <div className="eyebrow mb-4">Products</div>
+            <h2 className="display text-[clamp(2rem,4.5vw,3.25rem)] text-[var(--text-dark)]">
+              Two products we run ourselves
+            </h2>
+            <p className="mt-5 text-base leading-7 text-[var(--text-muted)]">
+              Not slideshows — working systems our clients use every day.
+            </p>
+          </div>
+          <Link
+            href="/products"
+            className="focus-ring inline-flex items-center gap-2 text-base font-medium text-[var(--mid-blue)] underline underline-offset-4 hover:text-[var(--navy)]"
+          >
+            See product details <ArrowUpRight size={16} aria-hidden="true" />
+          </Link>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-2">
+          {products.map((product) => (
+            <article
+              key={product.name}
+              className={`flex flex-col justify-between rounded-[24px] p-8 lg:p-10 ${
+                product.tone === "dark"
+                  ? "bg-[var(--navy)] text-white"
+                  : "border border-[var(--border-light)] bg-[var(--light-tint)] text-[var(--text-dark)]"
+              }`}
+            >
+              <div>
+                <div className="flex items-center justify-between gap-4">
+                  <h3 className="text-2xl font-medium">{product.name}</h3>
+                  <span
+                    className="eyebrow"
+                    style={{ color: product.tone === "dark" ? "rgba(255,255,255,0.75)" : undefined }}
+                  >
+                    {product.category}
+                  </span>
+                </div>
+                <p
+                  className={`mt-4 text-base leading-7 ${
+                    product.tone === "dark" ? "text-white/85" : "text-[var(--text-muted)]"
+                  }`}
+                >
+                  {product.description}
+                </p>
+              </div>
+              <Link
+                href="/products"
+                className={`focus-ring mt-8 inline-flex items-center gap-2 self-start text-base font-medium underline underline-offset-4 ${
+                  product.tone === "dark" ? "text-[var(--accent-cyan)]" : "text-[var(--mid-blue)]"
+                }`}
+              >
+                Talk to us <ArrowUpRight size={16} aria-hidden="true" />
+              </Link>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
