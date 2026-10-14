@@ -15,7 +15,7 @@ function InteractiveHeading() {
           {Array.from(line).map((ch, i) => {
             const delay = order++;
             return (
-              <span key={`${ch}-${i}`} className="hero-char" style={{ "--i": delay } as CSSProperties}>
+              <span key={`${ch}-${i}`} className="hero-char" style={{ "--char-index": delay } as CSSProperties}>
                 {ch === " " ? "\u00A0" : ch}
               </span>
             );

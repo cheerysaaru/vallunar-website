@@ -84,9 +84,8 @@ a { color: inherit; text-decoration: none; }
 .hero-char {
   display: inline-block;
   white-space: pre;
-  animation: hero-char-in .65s var(--soft) backwards;
-  animation-delay: calc(.35s + var(--i, 0) * .03s);
-  transition: transform .35s var(--soft), color .35s var(--ease), text-shadow .35s var(--ease);
+  opacity: 0;
+  /* animation runs only via body.ready */
 }
 .hero-char:hover {
   transform: translateY(-.14em) scale(1.15) rotate(-4deg);
@@ -99,16 +98,12 @@ a { color: inherit; text-decoration: none; }
   from { opacity: 0; transform: translateY(18px); }
   to { opacity: 1; transform: none; }
 }
-.hero-sub { animation: hero-fade-up .8s var(--soft) 2s backwards; }
-.hero-cta-wrap { animation: hero-fade-up .8s var(--soft) 2.25s backwards; }
-.hero-bottom { animation: hero-fade-up .8s var(--soft) 2.5s backwards; }
-
-/* Cookie banner — fade in when it appears */
-.consent-banner { animation: hero-fade-up .55s var(--soft) both; }
-
-/* Hero — floating CTA */
-.hero-float { display: inline-flex; animation: hero-bob 3.6s ease-in-out infinite; }
-@keyframes hero-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+/* base classes: no animation, hidden until body.ready */
+.hero-sub,
+.hero-cta-wrap,
+.hero-bottom {
+  opacity: 0;
+}
 
 /* Hero title — professional display face (Plus Jakarta Sans) */
 .hero-title {
@@ -116,6 +111,8 @@ a { color: inherit; text-decoration: none; }
   font-weight: 600;
   letter-spacing: -0.035em;
   text-shadow: 0 2px 30px rgba(5, 33, 74, 0.5);
+  opacity: 0;
+  transform: translateY(28px);
 }
 
 /* ============================================================
@@ -1229,21 +1226,28 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* Hero content entrance (triggered by .ready on body) */
+body.ready .hero-title {
+  animation: hero-fade-up 0.9s var(--soft) both;
+}
 body.ready .hero-char {
   animation: hero-char-in 0.9s var(--soft) both;
+  animation-delay: calc(0.12s * var(--char-index, 0));
 }
-body.ready .hero-sub { animation: hero-fade-up 0.9s var(--soft) 0.4s both; }
-body.ready .hero-cta-wrap { animation: hero-fade-up 0.9s var(--soft) 0.52s both; }
-body.ready .hero-bottom { animation: hero-fade-up 0.9s var(--soft) 0.64s both; }
+body.ready .hero-sub { animation: hero-fade-up 0.9s var(--soft) 0.12s both; }
+body.ready .hero-cta-wrap { animation: hero-fade-up 0.9s var(--soft) 0.24s both; }
+body.ready .hero-bottom { animation: hero-fade-up 0.9s var(--soft) 0.36s both; }
 
 /* Initial hidden state for hero content (before .ready) */
-.hero-title,
-.hero-sub,
-.hero-cta-wrap,
-.hero-bottom {
+.hero-title {
   opacity: 0;
   transform: translateY(28px);
 }
 .hero-char {
   opacity: 0;
+}
+.hero-sub,
+.hero-cta-wrap,
+.hero-bottom {
+  opacity: 0;
+  transform: translateY(28px);
 }
