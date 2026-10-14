@@ -1201,7 +1201,7 @@ a { color: inherit; text-decoration: none; }
   transform-origin: top;
   animation:
     splash-panel-lift 0.9s cubic-bezier(.76,0,.24,1) forwards,
-    splash-panel-failsafe 7s steps(1, end) forwards;
+    splash-panel-failsafe 10s steps(1, end) forwards;
   animation-delay: calc(var(--i) * 70ms);
 }
 
@@ -1220,7 +1220,7 @@ a { color: inherit; text-decoration: none; }
   to { transform: translateY(-101%); }
 }
 
-/* FAILSAFE: hide after 7s no matter what */
+/* FAILSAFE: hide after 10s no matter what */
 @keyframes splash-panel-failsafe {
   to { visibility: hidden; }
 }

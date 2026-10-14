@@ -33,8 +33,8 @@ export default function SplashScreen() {
 
     document.documentElement.style.overflow = "hidden";
 
-    const MIN_DISPLAY = 2300;
-    const MAX_DISPLAY = 3500;
+    const MIN_DISPLAY = 6000;
+    const MAX_DISPLAY = 7000;
     let exitTimer: ReturnType<typeof setTimeout>;
     let loadResolved = false;
 
