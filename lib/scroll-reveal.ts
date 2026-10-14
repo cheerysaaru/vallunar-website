@@ -49,6 +49,7 @@ export function useStaggeredReveal(
 ) {
   const [visibleIndices, setVisibleIndices] = useState<boolean[]>(Array(count).fill(false));
   const elementRefs = useRef<(HTMLElement | null)[]>(Array(count).fill(null));
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
   const { threshold = 0.1, rootMargin = "0px 0px -50px 0px", once = true } = options;
 
@@ -82,8 +83,29 @@ export function useStaggeredReveal(
     );
 
     elements.forEach((el) => observer.observe(el));
+    observerRef.current = observer;
+
     return () => observer.disconnect();
   }, [threshold, rootMargin, once, count]);
+
+  // Check initial visibility for elements already in viewport
+  useEffect(() => {
+    const elements = elementRefs.current.filter(Boolean) as HTMLElement[];
+    if (elements.length === 0 || !observerRef.current) return;
+
+    elements.forEach((el, i) => {
+      const rect = el.getBoundingClientRect();
+      const isInView = rect.top < window.innerHeight && rect.bottom > 0;
+      if (isInView) {
+        setVisibleIndices((prev) => {
+          const next = [...prev];
+          next[i] = true;
+          return next;
+        });
+        if (once) observerRef.current?.unobserve(el);
+      }
+    });
+  }, [count, once]);
 
   const getItemProps = (index: number) => ({
     ref: (el: HTMLElement | null) => {
