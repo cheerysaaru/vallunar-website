@@ -1181,7 +1181,7 @@ a { color: inherit; text-decoration: none; }
   color: #ffffff;
   display: block;
   transform: translateY(110%);
-  animation: splash-word-rise 0.9s cubic-bezier(.22,1,.36,1) 0.3s forwards;
+  animation: splash-word-rise 1.4s cubic-bezier(.22,1,.36,1) 0.4s forwards;
 }
 
 @keyframes splash-word-rise {
@@ -1212,7 +1212,7 @@ a { color: inherit; text-decoration: none; }
 .splash.is-exiting .splash-word {
   animation: none;
   opacity: 0;
-  transition: opacity 0.25s ease;
+  transition: opacity 0.6s ease;
 }
 
 .splash.is-exiting .splash-panel {
@@ -1231,15 +1231,15 @@ a { color: inherit; text-decoration: none; }
 
 /* Hero content entrance (triggered by .ready on body) */
 body.ready .hero-title {
-  animation: hero-fade-up 0.9s var(--soft) both;
+  animation: hero-fade-up 1.3s var(--soft) both;
 }
 body.ready .hero-char {
-  animation: hero-char-in 0.9s var(--soft) both;
-  animation-delay: calc(0.12s * var(--char-index, 0));
+  animation: hero-char-in 1.1s var(--soft) both;
+  animation-delay: calc(0.15s * var(--char-index, 0));
 }
-body.ready .hero-sub { animation: hero-fade-up 0.9s var(--soft) 0.12s both; }
-body.ready .hero-cta-wrap { animation: hero-fade-up 0.9s var(--soft) 0.24s both; }
-body.ready .hero-bottom { animation: hero-fade-up 0.9s var(--soft) 0.36s both; }
+body.ready .hero-sub { animation: hero-fade-up 1.1s var(--soft) 0.15s both; }
+body.ready .hero-cta-wrap { animation: hero-fade-up 1.1s var(--soft) 0.3s both; }
+body.ready .hero-bottom { animation: hero-fade-up 1.1s var(--soft) 0.45s both; }
 
 /* Initial hidden state for hero content (before .ready) */
 .hero-title {
