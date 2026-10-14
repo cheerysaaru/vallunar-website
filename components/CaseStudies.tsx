@@ -1,12 +1,16 @@
+"use client";
 import Link from "next/link";
 import { caseStudies } from "@/lib/data";
+import { useStaggeredReveal } from "@/lib/scroll-reveal";
 
 export default function CaseStudies() {
+  const { getItemProps } = useStaggeredReveal(caseStudies.length);
+
   return (
-    <section id="case-studies" className="bg-white">
-      <div className="mx-auto max-w-[1240px] px-6 py-20 lg:px-8 lg:py-24">
-        <div className="flex flex-wrap items-end justify-between gap-6">
-          <div>
+    <section id="case-studies" className="bg-white reveal">
+      <div className="mx-auto max-w-[1240px] px-6 py-20 lg:px-8 lg:py-28">
+        <div className="flex flex-wrap items-end justify-between gap-6 reveal">
+          <div className="reveal-left">
             <p className="eyebrow">Case studies</p>
             <h2 className="display mt-4 text-[clamp(2rem,4vw,3rem)] text-[var(--text-dark)]">
               Real projects, real results
@@ -18,17 +22,18 @@ export default function CaseStudies() {
           </div>
           <Link
             href="/case-studies"
-            className="fill-btn focus-ring inline-flex min-h-12 items-center px-7"
+            className="fill-btn focus-ring inline-flex min-h-12 items-center px-7 interactive btn-press pulse-glow"
           >
             <span>View all case studies</span>
           </Link>
         </div>
 
-        <div className="mt-12 grid gap-6 lg:grid-cols-2">
+        <div className="mt-12 grid gap-6 lg:grid-cols-2 reveal-stagger">
           {caseStudies.map((study, index) => (
             <article
               key={index}
-              className="rounded-[24px] border border-[var(--border-light)] bg-[var(--bg-warm)] p-8 lg:p-10"
+              className="rounded-[24px] border border-[var(--border-light)] bg-[var(--bg-warm)] p-8 lg:p-10 interactive card-lift"
+              {...getItemProps(index)}
             >
               <span className="eyebrow">{study.category}</span>
               <h3 className="mt-3 text-2xl font-medium text-[var(--text-dark)]">

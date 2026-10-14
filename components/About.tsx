@@ -1,14 +1,15 @@
-const FOUNDERS = [
-  { photo: "[REPLACE: photo file]", name: "[REPLACE: founder name]", role: "[REPLACE: role]", bio: "[REPLACE: one-line bio]" },
-  { photo: "[REPLACE: photo file]", name: "[REPLACE: founder name]", role: "[REPLACE: role]", bio: "[REPLACE: one-line bio]" }
-];
+"use client";
+import { FOUNDERS } from "@/lib/data";
+import { useStaggeredReveal } from "@/lib/scroll-reveal";
 
 export default function About() {
+  const { getItemProps } = useStaggeredReveal(FOUNDERS.length);
+
   return (
-    <section id="about" className="bg-[var(--bg-warm)]">
+    <section id="about" className="bg-[var(--bg-warm)] reveal">
       <div className="mx-auto max-w-[1240px] px-6 py-24 lg:px-8 lg:py-28">
         <div className="grid gap-14 lg:grid-cols-[1.1fr_0.9fr] lg:gap-20">
-          <div>
+          <div className="reveal-left">
             <div className="eyebrow mb-4">About</div>
             <h2 className="display text-[clamp(2rem,4.5vw,3.25rem)] text-[var(--text-dark)]">
               Built in Jaffna, for businesses that need software to work.
@@ -22,11 +23,12 @@ export default function About() {
               [REPLACE: one real sentence about why the company was started]
             </p>
           </div>
-          <ul className="grid gap-5 sm:grid-cols-2">
-            {FOUNDERS.map((founder) => (
+          <ul className="grid gap-5 sm:grid-cols-2 reveal-stagger">
+            {FOUNDERS.map((founder, index) => (
               <li
                 key={founder.name}
-                className="rounded-[20px] border border-[var(--border-light)] bg-white p-6"
+                className="rounded-[20px] border border-[var(--border-light)] bg-white p-6 interactive card-lift"
+                {...getItemProps(index)}
               >
                 <div
                   className="mb-5 grid aspect-square w-full place-items-center rounded-[14px] border border-dashed border-[var(--border-light)] bg-[var(--light-tint)] text-center"

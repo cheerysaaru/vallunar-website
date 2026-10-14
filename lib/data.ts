@@ -68,6 +68,11 @@ export const principles = [
   { title: "Support it after launch", body: "Local support from our team in Jaffna keeps your systems running as your business grows." }
 ];
 
+export const FOUNDERS = [
+  { photo: "[REPLACE: photo file]", name: "[REPLACE: founder name]", role: "[REPLACE: role]", bio: "[REPLACE: one-line bio]" },
+  { photo: "[REPLACE: photo file]", name: "[REPLACE: founder name]", role: "[REPLACE: role]", bio: "[REPLACE: one-line bio]" }
+];
+
 export const faqs = [
   {
     question: "What do you build?",
