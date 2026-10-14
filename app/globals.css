@@ -1199,6 +1199,10 @@ a { color: inherit; text-decoration: none; }
   flex: 1;
   background: #012A4A;
   transform-origin: top;
+  /* stays in place during splash; lifts only on exit */
+}
+
+.splash.is-exiting .splash-panel {
   animation:
     splash-panel-lift 0.9s cubic-bezier(.76,0,.24,1) forwards,
     splash-panel-failsafe 10s steps(1, end) forwards;
