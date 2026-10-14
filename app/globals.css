@@ -1151,3 +1151,99 @@ a { color: inherit; text-decoration: none; }
     overflow-x: hidden;
   }
 }
+
+/* ============================================================
+   SPLASH SCREEN — CURTAIN LOADER
+   ============================================================ */
+
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  /* no background — panels cover the page */
+}
+
+.splash-word-wrap {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  width: max-content;
+  margin-bottom: 0.5em;
+}
+
+.splash-word {
+  font-family: var(--font-plus-jakarta), var(--font-inter), sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-size: clamp(34px, 9vw, 110px);
+  color: #ffffff;
+  display: block;
+  transform: translateY(110%);
+  animation: splash-word-rise 0.9s cubic-bezier(.22,1,.36,1) 0.3s forwards;
+}
+
+@keyframes splash-word-rise {
+  to { transform: translateY(0); }
+}
+
+.splash-panels {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  z-index: 1;
+}
+
+.splash-panel {
+  flex: 1;
+  background: #012A4A;
+  transform-origin: top;
+  animation:
+    splash-panel-lift 0.9s cubic-bezier(.76,0,.24,1) forwards,
+    splash-panel-failsafe 7s steps(1, end) forwards;
+  animation-delay: calc(var(--i) * 70ms);
+}
+
+.splash.is-exiting .splash-word {
+  animation: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.splash.is-exiting .splash-panel {
+  animation-name: splash-panel-lift;
+  animation-fill-mode: forwards;
+}
+
+@keyframes splash-panel-lift {
+  to { transform: translateY(-101%); }
+}
+
+/* FAILSAFE: hide after 7s no matter what */
+@keyframes splash-panel-failsafe {
+  to { visibility: hidden; }
+}
+
+/* Hero content entrance (triggered by .ready on body) */
+body.ready .hero-char {
+  animation: hero-char-in 0.9s var(--soft) both;
+}
+body.ready .hero-sub { animation: hero-fade-up 0.9s var(--soft) 0.4s both; }
+body.ready .hero-cta-wrap { animation: hero-fade-up 0.9s var(--soft) 0.52s both; }
+body.ready .hero-bottom { animation: hero-fade-up 0.9s var(--soft) 0.64s both; }
+
+/* Initial hidden state for hero content (before .ready) */
+.hero-title,
+.hero-sub,
+.hero-cta-wrap,
+.hero-bottom {
+  opacity: 0;
+  transform: translateY(28px);
+}
+.hero-char {
+  opacity: 0;
+}
