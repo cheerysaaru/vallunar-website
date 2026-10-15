@@ -489,8 +489,8 @@ a { color: inherit; text-decoration: none; }
 .dots {
   display: none;
   position: relative;
-  width: 44px;
-  height: 44px;
+  width: 34px;
+  height: 34px;
   padding: 0;
   background: none;
   border: 0;
@@ -514,22 +514,22 @@ a { color: inherit; text-decoration: none; }
 }
 
 .dots i {
-  width: 7px;
-  height: 7px;
-  margin: -3.5px;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px;
   border-radius: 50%;
   background: currentColor;
   transition: transform .25s var(--ease) .2s, opacity 0s linear .2s;
 }
 
-.dots i:nth-of-type(1) { transform: translateY(-14px); }
+.dots i:nth-of-type(1) { transform: translateY(-10px); }
 .dots i:nth-of-type(2) { transform: none; }
-.dots i:nth-of-type(3) { transform: translateY(14px); }
+.dots i:nth-of-type(3) { transform: translateY(10px); }
 
 .dots b {
-  width: 24px;
-  height: 3px;
-  margin: -1.5px -12px;
+  width: 18px;
+  height: 2.5px;
+  margin: -1.25px -9px;
   border-radius: 3px;
   background: currentColor;
   transform: rotate(45deg) scaleX(0);
@@ -1099,9 +1099,9 @@ a { color: inherit; text-decoration: none; }
 
   .dots {
     display: flex !important;
-    flex: 0 0 44px;
-    width: 44px;
-    height: 44px;
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
   }
 
   .notch-link {
@@ -1150,4 +1150,78 @@ a { color: inherit; text-decoration: none; }
   html, body {
     overflow-x: hidden;
   }
+}
+
+/* ===== PAGE TRANSITION — curtain (5 vertical panels, darkest navy) ===== */
+/* Fixed overlay: inset 0, z-index 9999, never intercepts pointer events */
+.curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  display: flex;
+}
+
+/* Each panel: 20% wide, resting above the screen */
+.curtain-panel {
+  width: 20%;
+  height: 100%;
+  background: var(--navy-darker);
+  transform: translateY(-101%);
+  transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+  transition-delay: calc(var(--i, 0) * 50ms); /* 50ms stagger, left → right */
+  will-change: transform;
+}
+/* Covering the page */
+.curtain.cover .curtain-panel { transform: translateY(0); }
+/* Sliding away downward on the new page */
+.curtain.out .curtain-panel { transform: translateY(101%); }
+/* One-frame class used to snap panels back without animation */
+.curtain.curtain-reset .curtain-panel { transition: none; }
+
+/* Centered destination label (weight 700, clamp(34px, 9vw, 100px), white) */
+.curtain-label {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 0 5vw;
+  text-align: center;
+  color: #ffffff;
+  font-family: var(--font-plus-jakarta), var(--font-inter), sans-serif;
+  font-weight: 700;
+  font-size: clamp(34px, 9vw, 100px);
+  line-height: 1.05;
+  opacity: 0;
+  transition: opacity 0.3s ease 0.15s; /* slight hold on fade-out */
+}
+/* Label fades in at 0.45s while the curtain covers; fades out on reveal */
+.curtain.cover .curtain-label {
+  opacity: 1;
+  transition: opacity 0.4s ease 0.45s;
+}
+
+/* New page's headline / paragraph / buttons rise in (26px → 0, fade, 0.9s, 100ms stagger) */
+.curtain-rise {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.curtain-rise.curtain-rise-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Curtain arrival: compress the home hero's long entrance delays so the
+   sub-heading and buttons appear with the reveal instead of ~2s later.
+   Only active for a few seconds after a curtain navigation (html.curtain-nav). */
+html.curtain-nav .hero-sub { animation-delay: 0.5s; }
+html.curtain-nav .hero-cta-wrap { animation-delay: 0.65s; }
+html.curtain-nav .hero-bottom { animation-delay: 0.8s; }
+
+/* Reduced motion: no curtain, pages just switch */
+@media (prefers-reduced-motion: reduce) {
+  .curtain { display: none; }
 }

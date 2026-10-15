@@ -5,17 +5,17 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { site } from "@/lib/data";
 
 const navLinks = [
-  { key: "services", label: "Services", href: "/#services" },
+  { key: "services", label: "Services", href: "/services" },
   { key: "products", label: "Products", href: "/products" },
-  { key: "how-we-work", label: "How we work", href: "/#how-we-work" },
+  { key: "how-we-work", label: "How we work", href: "/how-we-work" },
   { key: "case-studies", label: "Case Studies", href: "/case-studies" },
 ];
 
 /* Key → href (used to find the desktop element for each key) */
 const KEY_HREF: Record<string, string> = {
-  services: "/#services",
+  services: "/services",
   products: "/products",
-  "how-we-work": "/#how-we-work",
+  "how-we-work": "/how-we-work",
   "case-studies": "/case-studies",
   contact: "/contact",
 };
@@ -36,14 +36,11 @@ export default function Navbar({ overlay = true }: { overlay?: boolean }) {
   const ctaRef = useRef<HTMLAnchorElement>(null);
   const blobRef = useRef<HTMLSpanElement>(null);
   const lastY = useRef(0);
-  /* While a click-driven smooth scroll runs, ignore scroll-driven section changes */
-  const ignoreScrollUntil = useRef(0);
 
   useEffect(() => {
     let frame = 0;
     const update = () => {
       frame = 0;
-      if (performance.now() < ignoreScrollUntil.current) return;
       const band = window.innerHeight * 0.4;
       let current = "contact";
       for (const key of SECTION_ORDER) {
@@ -154,21 +151,6 @@ export default function Navbar({ overlay = true }: { overlay?: boolean }) {
     setMobileOpen((v) => !v);
   };
 
-  /* Hash links and Case Studies (when its section exists on this page):
-     smooth-scroll + glide the pill; otherwise navigate normally. */
-  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, key: string, href: string) => {
-    const samePage = href.startsWith("/#") || key === "case-studies";
-    const id = href.startsWith("/#") ? href.slice(2) : key;
-    const target = samePage ? document.getElementById(id) : null;
-    if (!target) return; // no section here → normal navigation
-    e.preventDefault();
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    target.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
-    setActiveKey(key);
-    ignoreScrollUntil.current = performance.now() + 1200;
-    if (window.innerWidth <= 820) closeMobileMenu();
-  };
-
   const targetKey = hoverKey ?? activeKey;
 
   return (
@@ -197,7 +179,6 @@ export default function Navbar({ overlay = true }: { overlay?: boolean }) {
               className={`notch-link${targetKey === item.key ? " is-active" : ""}`}
               href={item.href}
               role="menuitem"
-              onClick={(e) => handleLinkClick(e, item.key, item.href)}
               onMouseEnter={() => setHoverKey(item.key)}
               onFocus={() => setHoverKey(item.key)}
             >
@@ -246,10 +227,7 @@ export default function Navbar({ overlay = true }: { overlay?: boolean }) {
             className="notch-mobile-link"
             href={item.href}
             role="menuitem"
-            onClick={(e) => {
-              handleLinkClick(e, item.key, item.href);
-              closeMobileMenu();
-            }}
+            onClick={closeMobileMenu}
           >
             {item.label}
           </a>

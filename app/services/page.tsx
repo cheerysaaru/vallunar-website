@@ -38,21 +38,21 @@ function ServicesGrid() {
 export default function ServicesPage() {
   return (
     <main>
-      {/* Hero Section */}
-      <section id="top" className="relative isolate grid min-h-[60vh] place-items-center overflow-hidden bg-[radial-gradient(circle_at_50%_40%,var(--navy-dark)_0%,var(--navy)_45%,var(--navy-darker)_100%)] text-center px-6 py-20">
-        <div className="relative z-10 max-w-3xl">
-          <h1 className="display text-[clamp(2.5rem,8vw,5rem)] text-white">Our <span className="text-[var(--accent-cyan)]">Services</span></h1>
-          <p className="mt-6 text-lg leading-8" style={{ color: "rgba(255,255,255,0.8)" }}>
+      {/* Hero Section — same heading style as Products / Case Studies */}
+      <section id="top" className="bg-[var(--navy)] px-6 pb-16 pt-36 text-white lg:px-8">
+        <div className="mx-auto max-w-[1240px]">
+          <h1 className="display text-[clamp(2.25rem,5.5vw,3.75rem)] text-white">Services</h1>
+          <p className="mt-5 max-w-[52ch] text-lg leading-8 text-white/80">
             Affordable, reliable technology solutions tailored to your business needs.
           </p>
         </div>
       </section>
 
-      {/* Services Grid */}
-      <section id="services" className="mx-auto max-w-[1240px] px-6 pb-24 lg:px-8">
-        <div className="eyebrow mb-5">What we offer</div>
-        <h2 className="display max-w-3xl text-5xl text-[var(--text-dark)] sm:text-6xl mb-16">Solutions built around you.</h2>
-        <ServicesGrid />
+      {/* Services Grid — same card section wrapper as Products / Case Studies */}
+      <section id="services" className="bg-[var(--bg-warm)]">
+        <div className="mx-auto max-w-[1240px] px-6 py-20 lg:px-8 lg:py-24">
+          <ServicesGrid />
+        </div>
       </section>
 
       {/* CTA */}
