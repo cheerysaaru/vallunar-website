@@ -1,6 +1,6 @@
 const FOUNDERS = [
-  { photo: "[REPLACE: photo file]", name: "[REPLACE: founder name]", role: "[REPLACE: role]", bio: "[REPLACE: one-line bio]" },
-  { photo: "[REPLACE: photo file]", name: "[REPLACE: founder name]", role: "[REPLACE: role]", bio: "[REPLACE: one-line bio]" }
+  { id: "home-founder-1", photo: "[REPLACE: photo file]", name: "[REPLACE: founder name]", role: "[REPLACE: role]", bio: "[REPLACE: one-line bio]" },
+  { id: "home-founder-2", photo: "[REPLACE: photo file]", name: "[REPLACE: founder name]", role: "[REPLACE: role]", bio: "[REPLACE: one-line bio]" }
 ];
 
 export default function About() {
@@ -25,7 +25,7 @@ export default function About() {
           <ul className="grid gap-5 sm:grid-cols-2">
             {FOUNDERS.map((founder) => (
               <li
-                key={founder.name}
+                key={founder.id}
                 className="rounded-[20px] border border-[var(--border-light)] bg-white p-6"
               >
                 <div
