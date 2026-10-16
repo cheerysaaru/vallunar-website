@@ -267,7 +267,7 @@ export default function Hero() {
         </div>
       </div>
       <div className="hero-bottom absolute bottom-6 left-7 right-7 hidden justify-between text-[11px] uppercase tracking-[.14em] text-mist/65 sm:flex">
-        <span>Built in Jaffna. Built to scale.</span>
+        <span>Built in Sri Lanka. Built to scale.</span>
         <span className="inline-flex items-center gap-2">Scroll to discover <ArrowDown size={14} /></span>
       </div>
     </section>

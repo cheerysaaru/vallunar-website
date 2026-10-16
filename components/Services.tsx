@@ -10,7 +10,7 @@ export default function Services() {
           What we build
         </h2>
         <p className="mt-5 text-base leading-7 text-[var(--text-muted)]">
-          Five things we do properly, for businesses in Jaffna and across Sri Lanka.
+          Five things we do properly, for businesses in Sri Lanka and across the region.
         </p>
       </div>
       <div role="list">

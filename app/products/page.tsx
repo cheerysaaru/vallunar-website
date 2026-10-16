@@ -6,7 +6,7 @@ import Reveal from "@/components/Reveal";
 
 const PAGE_TITLE = "Products";
 const PAGE_DESCRIPTION =
-  "txtmsg.lk SMS gateway and ASIT POS — products built and run by Vallunar in Jaffna, Sri Lanka.";
+  "txtmsg.lk SMS gateway and ASIT POS — products built and run by Vallunar in Sri Lanka.";
 
 export const metadata: Metadata = {
   title: PAGE_TITLE,

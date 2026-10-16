@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const jsonLd = { "@context": "https://schema.org", "@type": "LocalBusiness", name: site.legalName, url: site.domain, telephone: site.phone, email: site.email, address: { "@type": "PostalAddress", addressLocality: "Jaffna", addressCountry: "LK" }, areaServed: "Sri Lanka", description: site.description };
+  const jsonLd = { "@context": "https://schema.org", "@type": "LocalBusiness", name: site.legalName, url: site.domain, telephone: site.phone, email: site.email, address: { "@type": "PostalAddress", addressLocality: "Sri Lanka", addressCountry: "LK" }, areaServed: "Sri Lanka", description: site.description };
   return (
     <html lang="en">
       <body className={`${inter.variable} ${plusJakarta.variable} ${dmMono.variable}`}>
