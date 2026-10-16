@@ -57,14 +57,18 @@ const contactSchema = z.object({
 
 /**
  * Same-origin enforcement: browsers always send Origin on POST.
- * SITE_ORIGIN must be set in production (e.g. https://vallunar.com).
+ * SITE_ORIGIN accepts a comma-separated list of exact origins,
+ * e.g. "https://vallunar.com,https://www.vallunar.com".
  * Localhost is accepted only outside production.
  */
 function isAllowedOrigin(req: Request): boolean {
   const origin = req.headers.get("origin")?.trim().replace(/\/$/, "");
   if (!origin) return false;
-  const allowed = (process.env.SITE_ORIGIN || "").trim().replace(/\/$/, "");
-  if (allowed && origin === allowed) return true;
+  const allowedOrigins = (process.env.SITE_ORIGIN || "")
+    .split(",")
+    .map((entry) => entry.trim().replace(/\/$/, ""))
+    .filter(Boolean);
+  if (allowedOrigins.includes(origin)) return true;
   if (process.env.NODE_ENV !== "production") {
     try {
       const host = new URL(origin).hostname;
@@ -82,10 +86,22 @@ function isAllowedOrigin(req: Request): boolean {
  */
 const rateLog = new Map<string, number[]>();
 
+/**
+ * Railway sets X-Real-IP to the client's remote IP (docs: public-networking →
+ * specs-and-limits → "Request Headers"). Railway does NOT document
+ * X-Forwarded-For, so its first entry is client-controllable and must not be
+ * trusted. Prefer X-Real-IP; fall back to the RIGHTMOST X-Forwarded-For entry
+ * (the one appended by the nearest proxy), then "unknown".
+ */
 function clientIp(req: Request): string {
+  const realIp = req.headers.get("x-real-ip")?.trim();
+  if (realIp) return realIp;
   const forwarded = req.headers.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0].trim();
-  return req.headers.get("x-real-ip")?.trim() || "unknown";
+  if (forwarded) {
+    const entries = forwarded.split(",").map((entry) => entry.trim()).filter(Boolean);
+    if (entries.length > 0) return entries[entries.length - 1];
+  }
+  return "unknown";
 }
 
 function isRateLimited(ip: string): boolean {
