@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
+import WhatsAppFloat from "@/components/WhatsAppFloat";
 
 export default function PersistentLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -16,6 +17,7 @@ export default function PersistentLayout({ children }: { children: React.ReactNo
         {children}
       </main>
       <Footer />
+      <WhatsAppFloat />
       <CookieConsentBanner />
     </>
   );
