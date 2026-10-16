@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Reveal from "@/components/Reveal";
 import { caseStudies, site } from "@/lib/data";
 
 const PAGE_TITLE = "Case Studies";
@@ -37,6 +38,7 @@ export default function CaseStudiesPage() {
         </div>
       </section>
 
+      <Reveal>
       <section id="case-studies" className="bg-white">
         <div className="mx-auto max-w-[1240px] px-6 py-20 lg:px-8 lg:py-24">
           <p className="eyebrow mb-10 max-w-[60ch]">
@@ -69,7 +71,9 @@ export default function CaseStudiesPage() {
           </div>
         </div>
       </section>
+      </Reveal>
 
+      <Reveal>
       <section className="mx-auto max-w-[1240px] px-6 py-20 text-center lg:px-8">
         <h2 className="display text-[clamp(1.75rem,3.5vw,2.5rem)] text-[var(--text-dark)]">
           Have a project in mind?
@@ -81,6 +85,7 @@ export default function CaseStudiesPage() {
           <span>Talk to us</span>
         </a>
       </section>
+      </Reveal>
 
       </main>
   );

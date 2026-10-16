@@ -6,20 +6,19 @@ import HowWeWork from "@/components/HowWeWork";
 import CaseStudies from "@/components/CaseStudies";
 import Stats from "@/components/Stats";
 import Faq from "@/components/Faq";
-import PlusSocialButton from "@/components/PlusSocialButton";
-
+import Reveal from "@/components/Reveal";
 export default function HomePage() {
   return (
     <main>
       <Hero />
-      <Services />
-      <Products />
+      <Reveal><Services /></Reveal>
+      <Reveal><Products /></Reveal>
+      {/* HowWeWork drives its own scroll logic — no wrapper transform */}
       <HowWeWork />
-      <CaseStudies />
-      <About />
-      <Stats />
-      <Faq />
-      <PlusSocialButton />
+      <Reveal><CaseStudies /></Reveal>
+      <Reveal><About /></Reveal>
+      <Reveal><Stats /></Reveal>
+      <Reveal><Faq /></Reveal>
     </main>
   );
 }

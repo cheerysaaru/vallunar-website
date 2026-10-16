@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import EnquirySection from "@/components/EnquirySection";
 import ContactDetails from "@/components/ContactDetails";
+import Reveal from "@/components/Reveal";
 import { site } from "@/lib/data";
 
 const PAGE_TITLE = "Contact Us";
@@ -68,11 +69,14 @@ export default function ContactPage() {
       </section>
 
       {/* Enquiry cards + form */}
+      <Reveal>
       <section aria-label="Contact form" className="mx-auto max-w-[1240px] px-6 pb-16 lg:px-8">
         <EnquirySection />
       </section>
+      </Reveal>
 
       {/* Contact info + quick links */}
+      <Reveal>
       <section className="mx-auto grid max-w-[1240px] gap-6 px-6 pb-24 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:px-8">
         <ContactDetails />
 
@@ -94,6 +98,7 @@ export default function ContactPage() {
           </ul>
         </nav>
       </section>
+      </Reveal>
 
       </main>
   );

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { products, site } from "@/lib/data";
+import Reveal from "@/components/Reveal";
 
 const PAGE_TITLE = "Products";
 const PAGE_DESCRIPTION =
@@ -107,6 +108,7 @@ export default function ProductsPage() {
         </div>
       </section>
 
+      <Reveal>
       <section className="bg-[var(--bg-warm)]">
         <div className="mx-auto grid max-w-[1240px] gap-8 px-6 py-20 lg:px-8 lg:py-24">
           {products.map((product, index) => (
@@ -127,6 +129,7 @@ export default function ProductsPage() {
           </div>
         </div>
       </section>
+      </Reveal>
 
       </main>
   );

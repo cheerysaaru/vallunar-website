@@ -1,5 +1,6 @@
 "use client";
 import Footer from "@/components/Footer";
+import Reveal from "@/components/Reveal";
 import { services, site } from "@/lib/data";
 import { motion } from "framer-motion";
 
@@ -49,13 +50,16 @@ export default function ServicesPage() {
       </section>
 
       {/* Services Grid — same card section wrapper as Products / Case Studies */}
+      <Reveal>
       <section id="services" className="bg-[var(--bg-warm)]">
         <div className="mx-auto max-w-[1240px] px-6 py-20 lg:px-8 lg:py-24">
           <ServicesGrid />
         </div>
       </section>
+      </Reveal>
 
       {/* CTA */}
+      <Reveal>
       <section className="mx-auto max-w-[1240px] px-6 pb-24 lg:px-8 text-center">
         <h2 className="display text-4xl text-[var(--text-dark)] sm:text-5xl mb-6">Ready to start a project?</h2>
         <p className="mb-8 max-w-xl mx-auto text-lg" style={{ color: "var(--text-muted)" }}>
@@ -65,6 +69,7 @@ export default function ServicesPage() {
           Talk to us
         </a>
       </section>
+      </Reveal>
 
       </main>
   );

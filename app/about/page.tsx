@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Reveal from "@/components/Reveal";
 import { site } from "@/lib/data";
 
 const PAGE_TITLE = "About Us";
@@ -100,6 +101,7 @@ export default function AboutPage() {
       </section>
 
       {/* What We Do */}
+      <Reveal>
       <section id="about" className="mx-auto max-w-[1240px] px-6 py-24 lg:px-8">
         <div className="eyebrow mb-5">What we do</div>
         <h2 className="display max-w-3xl text-5xl text-[var(--mid-blue)] sm:text-6xl">One team.<br />Every digital need.</h2>
@@ -109,8 +111,10 @@ export default function AboutPage() {
           No fluff, no over-engineering — just reliable systems that help you grow.
         </p>
       </section>
+      </Reveal>
 
       {/* Our Principles */}
+      <Reveal>
       <section id="why-us" className="mx-auto max-w-[1180px] px-6 py-24 lg:px-8">
         <div className="eyebrow mb-5" style={{ color: "var(--mid-blue)" }}>Good solutions. Local support.</div>
         <h2 className="display text-5xl text-[var(--text-dark)] sm:text-6xl mb-16">Big thinking.<br />Short feedback loops.</h2>
@@ -127,8 +131,10 @@ export default function AboutPage() {
           ))}
         </div>
       </section>
+      </Reveal>
 
       {/* Meet Our Founders */}
+      <Reveal>
       <section id="founders" className="mx-auto max-w-[1180px] px-6 py-24 lg:px-8">
         <div className="eyebrow mb-5" style={{ color: "var(--mid-blue)" }}>Meet our founders</div>
         <h2 className="display text-5xl text-[var(--text-dark)] sm:text-6xl mb-6">Leadership that listens.</h2>
@@ -145,8 +151,10 @@ export default function AboutPage() {
           Founder photos are placeholders. Replace <code>/public/founders/sasitharan.jpg</code> and <code>/public/founders/thankautham.jpg</code> with actual photos.
         </p>
       </section>
+      </Reveal>
 
       {/* Stats */}
+      <Reveal>
       <section className="mx-auto max-w-[1180px] px-6 pb-24 lg:px-8">
         <div className="grid grid-cols-2 gap-8 text-center sm:grid-cols-4">
           <div>
@@ -167,6 +175,7 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+      </Reveal>
 
       </main>
   );
