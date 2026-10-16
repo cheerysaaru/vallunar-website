@@ -26,8 +26,8 @@ export const AREAS_OF_INTEREST = [
 ] as const;
 
 export const LIMITS = {
-  name: 120,
-  email: 254,
+  name: 100,
+  email: 200,
   phone: 30,
   company: 120,
   message: 3000,

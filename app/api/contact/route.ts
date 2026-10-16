@@ -29,11 +29,11 @@ const FORBIDDEN_MESSAGE = "Request not allowed.";
 /** Server-authoritative schema (zod). Tighter than the shared client rules:
  *  name ≤ 100, email ≤ 200, message 10–3000. */
 const contactSchema = z.object({
-  name: z.string().trim().min(2, "Please enter a valid name.").max(100, "Name must be 100 characters or fewer."),
+  name: z.string().trim().min(2, "Please enter a valid name.").max(LIMITS.name, `Name must be ${LIMITS.name} characters or fewer.`),
   email: z
     .string()
     .trim()
-    .max(200, "Email must be 200 characters or fewer.")
+    .max(LIMITS.email, `Email must be ${LIMITS.email} characters or fewer.`)
     .refine((v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v), "Please enter a valid email address."),
   phone: z
     .string()
@@ -49,7 +49,7 @@ const contactSchema = z.object({
     .string()
     .trim()
     .min(LIMITS.messageMin, `Please add a little more detail (at least ${LIMITS.messageMin} characters).`)
-    .max(3000, "Message must be 3000 characters or fewer."),
+    .max(LIMITS.message, `Message must be ${LIMITS.message} characters or fewer.`),
   enquiryType: z.enum(ENQUIRY_TYPES, { message: "Invalid enquiry type." }),
   consent: z.literal(true, { message: "Please agree to be contacted about your enquiry." }),
   marketing: z.boolean().optional(),
@@ -178,12 +178,12 @@ export async function POST(req: Request) {
   }
 
   const payload: ContactPayload = {
-    name: sanitize(input.name, 100),
-    email: sanitize(input.email, 200),
+    name: sanitize(input.name, LIMITS.name),
+    email: sanitize(input.email, LIMITS.email),
     phone: sanitize(input.phone ?? "", LIMITS.phone),
     company: sanitize(input.company ?? "", LIMITS.company),
     area: sanitize(input.area, LIMITS.message),
-    message: sanitize(input.message, 3000),
+    message: sanitize(input.message, LIMITS.message),
     enquiryType: input.enquiryType,
     consent: true,
     marketing: input.marketing === true,
