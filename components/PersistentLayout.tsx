@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
-import PageTransition from "@/components/PageTransition";
 
 export default function PersistentLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -18,7 +17,6 @@ export default function PersistentLayout({ children }: { children: React.ReactNo
       </main>
       <Footer />
       <CookieConsentBanner />
-      <PageTransition />
     </>
   );
 }
