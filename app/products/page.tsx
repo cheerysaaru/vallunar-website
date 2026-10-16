@@ -88,8 +88,8 @@ function ProductBlock({ product, index }: { product: (typeof products)[number]; 
           ))}
         </ul>
 
-        <Link href="/contact" className="fill-btn focus-ring mt-9 inline-flex min-h-12 items-center px-7">
-          <span>Talk to us <ArrowUpRight size={16} aria-hidden="true" /></span>
+        <Link href="/contact" className={`focus-ring mt-9 inline-flex min-h-12 items-center px-7 ${dark ? "bg-[var(--accent-cyan)] text-[var(--navy-dark)] hover:bg-white" : "fill-btn"}`}>
+          <span className={dark ? "font-semibold" : ""}>Talk to us <ArrowUpRight size={16} aria-hidden="true" /></span>
         </Link>
       </div>
     </article>
