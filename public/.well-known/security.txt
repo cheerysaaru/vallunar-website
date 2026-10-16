@@ -1,0 +1,5 @@
+Contact: mailto:mail@vallunar.com
+Expires: 2027-10-16T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://vallunar.com/.well-known/security.txt
+Policy: https://vallunar.com/privacy
