@@ -9,7 +9,7 @@ export default function HowWeWork() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const stepsRef = useRef<(HTMLLIElement | null)[]>([null, null, null]);
   const sectionRef = useRef<HTMLElement>(null);
-  const rafRef = useRef<number>();
+  const rafRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 900px)");
