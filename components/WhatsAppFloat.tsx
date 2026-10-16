@@ -28,7 +28,7 @@ export default function WhatsAppFloat() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"
-      className="wa-float focus-ring"
+      className="wa-float visible focus-ring"
     >
       <svg
         viewBox="0 0 24 24"
