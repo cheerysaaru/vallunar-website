@@ -10,8 +10,9 @@
  *  - error responses never leak server details
  */
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import { getContactEnv, saveLead, sendAutoReply, sendEmail, type ContactPayload } from "@/lib/contact/handlers";
-import { LIMITS, sanitize, validateContact } from "@/lib/contact/validation";
+import { AREAS_OF_INTEREST, ENQUIRY_TYPES, LIMITS, sanitize } from "@/lib/contact/validation";
 
 export const runtime = "nodejs";
 
@@ -19,9 +20,61 @@ const RATE_WINDOW_MS = 10 * 60_000; // 10 minutes
 const RATE_MAX = 5; // 5 requests per window per IP
 const MIN_FILL_MS = 3_000; // form must take at least 3 seconds to submit
 const CLOCK_SKEW_MS = 60_000; // tolerate 1 minute of client clock skew
+const MAX_BODY_BYTES = 10 * 1024; // reject request bodies over 10KB
 
 const SUCCESS_MESSAGE = "Thank you! We'll get back to you soon.";
 const GENERIC_ERROR = "We're having trouble receiving messages right now. Please try again later.";
+const FORBIDDEN_MESSAGE = "Request not allowed.";
+
+/** Server-authoritative schema (zod). Tighter than the shared client rules:
+ *  name ≤ 100, email ≤ 200, message 10–3000. */
+const contactSchema = z.object({
+  name: z.string().trim().min(2, "Please enter a valid name.").max(100, "Name must be 100 characters or fewer."),
+  email: z
+    .string()
+    .trim()
+    .max(200, "Email must be 200 characters or fewer.")
+    .refine((v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v), "Please enter a valid email address."),
+  phone: z
+    .string()
+    .trim()
+    .max(LIMITS.phone)
+    .regex(/^[+()\-\s.\d]*$/, "Please enter a valid phone number.")
+    .refine((v) => v === "" || (v.replace(/\D/g, "").length >= 7 && v.replace(/\D/g, "").length <= 15), "Please enter a valid phone number (7–15 digits).")
+    .optional()
+    .or(z.literal("")),
+  company: z.string().trim().max(LIMITS.company).optional().or(z.literal("")),
+  area: z.enum(AREAS_OF_INTEREST, { message: "Please select an area of interest." }),
+  message: z
+    .string()
+    .trim()
+    .min(LIMITS.messageMin, `Please add a little more detail (at least ${LIMITS.messageMin} characters).`)
+    .max(3000, "Message must be 3000 characters or fewer."),
+  enquiryType: z.enum(ENQUIRY_TYPES, { message: "Invalid enquiry type." }),
+  consent: z.literal(true, { message: "Please agree to be contacted about your enquiry." }),
+  marketing: z.boolean().optional(),
+});
+
+/**
+ * Same-origin enforcement: browsers always send Origin on POST.
+ * SITE_ORIGIN must be set in production (e.g. https://vallunar.com).
+ * Localhost is accepted only outside production.
+ */
+function isAllowedOrigin(req: Request): boolean {
+  const origin = req.headers.get("origin")?.trim().replace(/\/$/, "");
+  if (!origin) return false;
+  const allowed = (process.env.SITE_ORIGIN || "").trim().replace(/\/$/, "");
+  if (allowed && origin === allowed) return true;
+  if (process.env.NODE_ENV !== "production") {
+    try {
+      const host = new URL(origin).hostname;
+      return host === "localhost" || host === "127.0.0.1";
+    } catch {
+      return false;
+    }
+  }
+  return false;
+}
 
 /**
  * In-memory rate limiter. Fine for a single instance; swap for Redis/Upstash
@@ -59,6 +112,11 @@ function json(body: Record<string, unknown>, status = 200): NextResponse {
 }
 
 export async function POST(req: Request) {
+  // Same-origin gate first — never parse bodies from foreign origins.
+  if (!isAllowedOrigin(req)) {
+    return json({ ok: false, message: FORBIDDEN_MESSAGE }, 403);
+  }
+
   if (isRateLimited(clientIp(req))) {
     return json(
       {
@@ -69,12 +127,26 @@ export async function POST(req: Request) {
     );
   }
 
-  let body: Record<string, unknown>;
+  // Reject oversized bodies (header or actual payload).
+  const declaredLength = Number(req.headers.get("content-length") ?? 0);
+  if (Number.isFinite(declaredLength) && declaredLength > MAX_BODY_BYTES) {
+    return json({ ok: false, message: "Request too large." }, 413);
+  }
+  const rawBody = await req.text();
+  if (Buffer.byteLength(rawBody, "utf8") > MAX_BODY_BYTES) {
+    return json({ ok: false, message: "Request too large." }, 413);
+  }
+
+  let parsedJson: unknown;
   try {
-    body = (await req.json()) as Record<string, unknown>;
+    parsedJson = JSON.parse(rawBody);
   } catch {
     return json({ ok: false, message: "Invalid request." }, 400);
   }
+  if (typeof parsedJson !== "object" || parsedJson === null || Array.isArray(parsedJson)) {
+    return json({ ok: false, message: "Invalid request." }, 400);
+  }
+  const body = parsedJson as Record<string, unknown>;
 
   // Honeypot: pretend success so bots learn nothing.
   if (typeof body.website === "string" && body.website.trim() !== "") {
@@ -88,27 +160,33 @@ export async function POST(req: Request) {
     return json({ ok: false, message: "That was quick! Please review your details and submit again." }, 400);
   }
 
-  const errors = validateContact(body);
-  if (Object.keys(errors).length > 0) {
+  const zodResult = contactSchema.safeParse(body);
+  if (!zodResult.success) {
+    const errors: Record<string, string> = {};
+    for (const issue of zodResult.error.issues) {
+      const field = String(issue.path[0] ?? "form");
+      if (!errors[field]) errors[field] = issue.message;
+    }
     return json({ ok: false, errors, message: "Please correct the highlighted fields." }, 400);
   }
+  const input = zodResult.data;
 
   const env = getContactEnv();
   if (!env) {
-    // Clear server log above; friendly (generic) message for the visitor.
+    // Server log (config presence only — no request data); generic message to the visitor.
     return json({ ok: false, message: GENERIC_ERROR }, 500);
   }
 
   const payload: ContactPayload = {
-    name: sanitize(body.name, LIMITS.name),
-    email: sanitize(body.email, LIMITS.email),
-    phone: sanitize(body.phone, LIMITS.phone),
-    company: sanitize(body.company, LIMITS.company),
-    area: sanitize(body.area, LIMITS.message),
-    message: sanitize(body.message, LIMITS.message),
-    enquiryType: String(body.enquiryType),
+    name: sanitize(input.name, 100),
+    email: sanitize(input.email, 200),
+    phone: sanitize(input.phone ?? "", LIMITS.phone),
+    company: sanitize(input.company ?? "", LIMITS.company),
+    area: sanitize(input.area, LIMITS.message),
+    message: sanitize(input.message, 3000),
+    enquiryType: input.enquiryType,
     consent: true,
-    marketing: body.marketing === true || body.marketing === "true",
+    marketing: input.marketing === true,
     ip: clientIp(req),
   };
 
@@ -116,7 +194,9 @@ export async function POST(req: Request) {
     await sendEmail(payload, env);
     await saveLead(payload);
   } catch (error) {
-    console.error("[contact] Failed to deliver enquiry:", error);
+    // Log status code only — never personal data or provider bodies.
+    const status = error instanceof Error ? Number((error as { status?: number }).status) || 0 : 0;
+    console.error("[contact] delivery failed with status", status);
     return json({ ok: false, message: GENERIC_ERROR }, 500);
   }
 

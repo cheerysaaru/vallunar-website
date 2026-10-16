@@ -69,7 +69,14 @@ const SUBJECT_LABELS: Record<string, string> = {
 
 function enquirySubject(payload: ContactPayload): string {
   const label = SUBJECT_LABELS[payload.enquiryType] ?? "Website";
-  return `[Website] ${label} enquiry from ${sanitize(payload.name, LIMITS.name)}`;
+  // CR/LF must never reach a subject/header value (header-injection hygiene).
+  const safeName = sanitize(payload.name, LIMITS.name).replace(/[\r\n]+/g, " ");
+  return `[Website] ${label} enquiry from ${safeName}`;
+}
+
+/** Defence-in-depth: strip CR/LF from any value used in email headers. */
+function headerSafe(value: string, max: number): string {
+  return sanitize(value, max).replace(/[\r\n]+/g, " ");
 }
 
 function row(label: string, value: string): string {
@@ -126,6 +133,13 @@ function buildAutoReplyHtml(payload: ContactPayload): string {
   </body></html>`;
 }
 
+class DeliveryError extends Error {
+  constructor(public readonly status: number) {
+    super(`Email provider responded ${status}`);
+    this.name = "DeliveryError";
+  }
+}
+
 async function postEmail(env: ContactEnv, body: Record<string, unknown>): Promise<void> {
   const response = await fetch(RESEND_ENDPOINT, {
     method: "POST",
@@ -138,9 +152,8 @@ async function postEmail(env: ContactEnv, body: Record<string, unknown>): Promis
   });
 
   if (!response.ok) {
-    const detail = await response.text().catch(() => "");
-    // Log status + detail server-side only — never returned to the client.
-    throw new Error(`Resend responded with ${response.status}: ${detail.slice(0, 300)}`);
+    // Carry only the HTTP status — never the provider body (may echo request data).
+    throw new DeliveryError(response.status);
   }
 }
 
@@ -149,7 +162,7 @@ export async function sendEmail(payload: ContactPayload, env: ContactEnv): Promi
   await postEmail(env, {
     from: env.from,
     to: [env.to],
-    reply_to: payload.email,
+    reply_to: headerSafe(payload.email, 200),
     subject: enquirySubject(payload),
     html: buildEmailHtml(payload),
     text:
@@ -165,13 +178,14 @@ export async function sendAutoReply(payload: ContactPayload, env: ContactEnv): P
   try {
     await postEmail(env, {
       from: env.from,
-      to: [payload.email],
+      to: [headerSafe(payload.email, 200)],
       subject: "We've received your enquiry — Vallunar Groups",
       html: buildAutoReplyHtml(payload),
       text: `Thank you, ${payload.name}. We've received your enquiry and will get back to you soon. — Vallunar Groups`,
     });
   } catch (error) {
-    console.warn("[contact] Auto-reply could not be sent:", error);
+    const status = error instanceof DeliveryError ? error.status : 0;
+    console.warn("[contact] Auto-reply failed with status", status);
   }
 }
 
