@@ -99,22 +99,22 @@ export default function Contact() {
           <div className="grid gap-4">
             <div>
               <label className="mb-1.5 block text-sm font-medium text-[var(--text-dark)]" htmlFor="contact-name">Name</label>
-              <input id="contact-name" {...nameField} ref={(el) => { nameField.ref(el); firstInput.current = el; }} className={inputClass} placeholder="Your name" />
+              <input id="contact-name" maxLength={100} {...nameField} ref={(el) => { nameField.ref(el); firstInput.current = el; }} className={inputClass} placeholder="Your name" />
               {errors.name && <p className="mt-1 text-sm text-[var(--error)]">Name is required.</p>}
             </div>
             <div>
               <label className="mb-1.5 block text-sm font-medium text-[var(--text-dark)]" htmlFor="contact-email">Email</label>
-              <input id="contact-email" type="email" {...register("email", { required: true, pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ })} className={inputClass} placeholder="you@company.com" />
+              <input id="contact-email" type="email" maxLength={200} {...register("email", { required: true, pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ })} className={inputClass} placeholder="you@company.com" />
               {errors.email && <p className="mt-1 text-sm text-[var(--error)]">A valid email is required.</p>}
             </div>
             <div>
               <label className="mb-1.5 block text-sm font-medium text-[var(--text-dark)]" htmlFor="contact-phone">Phone</label>
-              <input id="contact-phone" type="tel" {...register("phone")} className={inputClass} placeholder="+94 XX XXXXXXX" />
+              <input id="contact-phone" type="tel" maxLength={30} {...register("phone")} className={inputClass} placeholder="+94 XX XXXXXXX" />
             </div>
             <div>
               <label className="mb-1.5 block text-sm font-medium text-[var(--text-dark)]" htmlFor="contact-message">Message</label>
-              <textarea id="contact-message" rows={4} {...register("message", { required: true })} className={`${inputClass} resize-none`} placeholder="What are you building?" />
-              {errors.message && <p className="mt-1 text-sm text-[var(--error)]">Message is required.</p>}
+              <textarea id="contact-message" rows={4} maxLength={3000} {...register("message", { required: true, minLength: { value: 10, message: "Please add a little more detail." }, maxLength: { value: 3000, message: "Message is too long." } })} className={`${inputClass} resize-none`} placeholder="What are you building?" />
+              {errors.message && <p className="mt-1 text-sm text-[var(--error)]">{errors.message.message || "Message is required."}</p>}
             </div>
           </div>
           <input {...register("botcheck")} type="hidden" />
