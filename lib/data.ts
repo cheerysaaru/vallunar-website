@@ -9,12 +9,10 @@ export const site = {
   founded: "2023",
   phone: "+94 71 709 7166",
   email: "mail@vallunar.com",
-  whatsapp: "94XXXXXXXXX",
+  whatsapp: "94717097166",
   domain: "https://vallunar.com",
   linkedIn: "https://www.linkedin.com/company/vallunar-groups-pvt-ltd",
-  // [REPLACE: confirm these social URLs]
-  instagram: "#",
-  facebook: "#",
+  facebook: "https://www.facebook.com/share/1Dih5Nt6V3/?mibextid=wwXIfr",
   address: "Jaffna, Northern Province 44000, Sri Lanka"
 };
 

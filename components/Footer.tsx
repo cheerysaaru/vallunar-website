@@ -52,8 +52,7 @@ export default function Footer() {
           <h2 className="eyebrow mb-4" style={{ color: "rgba(255,255,255,0.65)" }}>Social</h2>
           <ul className="space-y-2 text-base">
             <li><a className="focus-ring text-white/80 hover:text-white" href={site.linkedIn} target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
-            <li><a className="focus-ring text-white/80 hover:text-white" href={site.instagram} target="_blank" rel="noopener noreferrer">[REPLACE: Instagram]</a></li>
-            <li><a className="focus-ring text-white/80 hover:text-white" href={site.facebook} target="_blank" rel="noopener noreferrer">[REPLACE: Facebook]</a></li>
+            <li><a className="focus-ring text-white/80 hover:text-white" href={site.facebook} target="_blank" rel="noopener noreferrer">Facebook</a></li>
           </ul>
         </div>
       </div>
