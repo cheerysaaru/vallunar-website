@@ -135,13 +135,16 @@ function FormBody({
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ defaultValues, shouldFocusError: true });
 
+  const lastValuesRef = useRef<FormValues>(null);
+
   // Keep a draft in the parent so switching enquiry cards never loses input.
   useEffect(() => {
     const subscription = watch((values) => onDraft(values as FormValues));
     return () => subscription.unsubscribe();
   }, [watch, onDraft]);
 
-  const submit = handleSubmit(async (values) => {
+  const runSubmit = async (values: FormValues) => {
+    lastValuesRef.current = values;
     setStatus({ kind: "idle" });
     try {
       const response = await fetch("/api/contact", {
@@ -174,7 +177,13 @@ function FormBody({
     } catch {
       setStatus({ kind: "error", message: "Something went wrong. Please check your connection and try again." });
     }
-  });
+  };
+
+  const submit = handleSubmit(runSubmit);
+
+  const retrySubmit = () => {
+    if (lastValuesRef.current) runSubmit(lastValuesRef.current);
+  };
 
   const copy = FORM_COPY[enquiryType];
 
@@ -325,9 +334,17 @@ function FormBody({
         </div>
 
         {status.kind === "error" && status.message && (
-          <p role="alert" className="mt-5 rounded-xl border border-[var(--error)]/40 bg-[var(--error-bg)] px-4 py-3 text-sm" style={{ color: "var(--error)" }}>
-            {status.message}
-          </p>
+          <div className="mt-5 rounded-xl border border-[var(--error)]/40 bg-[var(--error-bg)] px-4 py-3 text-sm" style={{ color: "var(--error)" }}>
+            <p role="alert">{status.message}</p>
+            <button
+              type="button"
+              onClick={retrySubmit}
+              className="mt-3 inline-flex items-center gap-2 rounded-full border border-[var(--error)]/40 bg-white px-4 py-1.5 text-sm text-[var(--error)] transition hover:bg-[var(--error-bg)] focus-ring"
+              aria-label="Retry sending"
+            >
+              Try again
+            </button>
+          </div>
         )}
 
         <button type="submit" disabled={isSubmitting} className="fill-btn focus-ring mt-6 w-full justify-center disabled:pointer-events-none disabled:opacity-70">
