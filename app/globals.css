@@ -1155,6 +1155,42 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ============================================================
+   SCROLL PROGRESS BAR — 3px thin bar at the top of the viewport.
+   Width driven by the --scroll-progress custom property set in JS.
+   Decorative only (aria-hidden). Hidden in print.
+   ============================================================ */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 90;
+  width: 100%;
+  height: 3px;
+  pointer-events: none;
+}
+
+.scroll-progress::after {
+  content: "";
+  display: block;
+  height: 100%;
+  width: var(--scroll-progress, 0%);
+  background: var(--mid-blue);
+  transition: width 0.1s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress::after {
+    transition: none;
+  }
+}
+
+@media print {
+  .scroll-progress {
+    display: none !important;
+  }
+}
+
+/* ============================================================
    BACK-TO-TOP BUTTON — 48px round, stacked 12px above the
    WhatsApp float. Fades in after scrolling 400px.
    ============================================================ */
