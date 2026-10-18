@@ -123,10 +123,12 @@ a { color: inherit; text-decoration: none; }
   animation-delay: calc(.35s + var(--i, 0) * .03s);
   transition: transform .35s var(--soft), color .35s var(--ease), text-shadow .35s var(--ease);
 }
-.hero-char:hover {
-  transform: translateY(-.14em) scale(1.15) rotate(-4deg);
-  color: var(--accent-cyan);
-  text-shadow: 0 12px 28px rgba(97, 165, 194, .55);
+@media (hover: hover) {
+  .hero-char:hover {
+    transform: translateY(-.14em) scale(1.15) rotate(-4deg);
+    color: var(--accent-cyan);
+    text-shadow: 0 12px 28px rgba(97, 165, 194, .55);
+  }
 }
 
 /* Hero — content below the headline fades in after the headline animation */
@@ -313,13 +315,15 @@ a { color: inherit; text-decoration: none; }
   background: #ffffff;
 }
 
-.hero-cta:hover {
-  color: var(--navy-darker);
-  box-shadow: 0 16px 36px rgba(255, 255, 255, 0.3);
-}
+@media (hover: hover) {
+  .hero-cta:hover {
+    color: var(--navy-darker);
+    box-shadow: 0 16px 36px rgba(255, 255, 255, 0.3);
+  }
 
-.hero-cta:hover > span {
-  color: var(--navy-darker);
+  .hero-cta:hover > span {
+    color: var(--navy-darker);
+  }
 }
 
 .hero-cta:focus-visible { outline: 2px solid var(--accent-cyan); outline-offset: 3px; }
@@ -477,7 +481,12 @@ a { color: inherit; text-decoration: none; }
   transition: color .4s var(--soft);
 }
 
-.notch-link:hover,
+@media (hover: hover) {
+  .notch-link:hover {
+    color: #ffffff;
+  }
+}
+
 .notch-link:focus-visible {
   color: #ffffff;
 }
@@ -519,8 +528,10 @@ a { color: inherit; text-decoration: none; }
   background: #ffffff;
 }
 
-.notch-nav.solid .notch-cta:hover {
-  color: var(--navy-darker);
+@media (hover: hover) {
+  .notch-nav.solid .notch-cta:hover {
+    color: var(--navy-darker);
+  }
 }
 
 /* ============================================================
@@ -655,14 +666,24 @@ a { color: inherit; text-decoration: none; }
   transition: color .5s var(--soft);
 }
 
-.fill-btn:hover,
+@media (hover: hover) {
+  .fill-btn:hover {
+    color: #ffffff;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 22px rgba(0, 0, 0, .25);
+  }
+
+  .fill-btn:hover::before {
+    top: -60%;
+  }
+}
+
 .fill-btn:focus-visible {
   color: #ffffff;
   transform: translateY(-4px);
   box-shadow: 0 12px 22px rgba(0, 0, 0, .25);
 }
 
-.fill-btn:hover::before,
 .fill-btn:focus-visible::before {
   top: -60%;
 }
@@ -686,7 +707,12 @@ a { color: inherit; text-decoration: none; }
   background: var(--accent-cyan);
 }
 
-.hero-cta:hover,
+@media (hover: hover) {
+  .hero-cta:hover {
+    color: var(--navy-darker);
+  }
+}
+
 .hero-cta:focus-visible {
   color: var(--navy-darker);
 }
@@ -706,12 +732,14 @@ a { color: inherit; text-decoration: none; }
     background: var(--accent-cyan);
   }
 
-  .fill-btn-dark:hover,
-  .fill-btn-dark:focus-visible {
-    color: var(--navy-darker);
+  @media (hover: hover) {
+    .fill-btn-dark:hover {
+      color: var(--navy-darker);
+    }
   }
 
   .fill-btn-dark:focus-visible {
+    color: var(--navy-darker);
     outline-color: var(--accent-cyan);
   }
 
@@ -759,12 +787,14 @@ a { color: inherit; text-decoration: none; }
   color: var(--navy-darker);
 }
 
-.notch-nav .notch-cta:hover,
-.notch-nav .notch-cta:focus-visible {
-  color: var(--navy-darker);
+@media (hover: hover) {
+  .notch-nav .notch-cta:hover {
+    color: var(--navy-darker);
+  }
 }
 
 .notch-nav .notch-cta:focus-visible {
+  color: var(--navy-darker);
   outline-color: var(--accent-cyan);
 }
 
@@ -817,13 +847,16 @@ a { color: inherit; text-decoration: none; }
   transition: background 200ms var(--ease), color 200ms var(--ease);
 }
 
-.notch-mobile-link:hover,
-.notch-mobile-link:focus-visible {
-  background: var(--notch-panel-hover);
-  color: var(--notch-text);
+@media (hover: hover) {
+  .notch-mobile-link:hover {
+    background: var(--notch-panel-hover);
+    color: var(--notch-text);
+  }
 }
 
 .notch-mobile-link:focus-visible {
+  background: var(--notch-panel-hover);
+  color: var(--notch-text);
   outline: 2px solid var(--notch-text);
   outline-offset: 2px;
 }
@@ -845,10 +878,12 @@ a { color: inherit; text-decoration: none; }
   transition: transform 200ms var(--soft), box-shadow 200ms var(--ease), background 200ms var(--ease);
 }
 
-.notch-mobile-cta:hover {
-  transform: scale(1.02);
-  background: #000;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+@media (hover: hover) {
+  .notch-mobile-cta:hover {
+    transform: scale(1.02);
+    background: #000;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
 }
 
 .notch-mobile-cta:focus-visible {
@@ -934,7 +969,25 @@ a { color: inherit; text-decoration: none; }
 
 .svc-arrow { color: var(--text-muted); transition: transform 0.35s var(--soft), color 0.35s var(--soft); }
 
-.svc-row:hover,
+@media (hover: hover) {
+  .svc-row:hover {
+    background: var(--mid-blue);
+    color: #ffffff;
+    padding-left: 1.5rem;
+    outline: none;
+  }
+
+  .svc-row:hover .svc-num,
+  .svc-row:hover .svc-desc,
+  .svc-row:hover .svc-arrow {
+    color: rgba(255, 255, 255, 0.88);
+  }
+
+  .svc-row:hover .svc-arrow {
+    transform: translateX(6px);
+  }
+}
+
 .svc-row:focus-visible {
   background: var(--mid-blue);
   color: #ffffff;
@@ -942,16 +995,12 @@ a { color: inherit; text-decoration: none; }
   outline: none;
 }
 
-.svc-row:hover .svc-num,
-.svc-row:hover .svc-desc,
-.svc-row:hover .svc-arrow,
 .svc-row:focus-visible .svc-num,
 .svc-row:focus-visible .svc-desc,
 .svc-row:focus-visible .svc-arrow {
   color: rgba(255, 255, 255, 0.88);
 }
 
-.svc-row:hover .svc-arrow,
 .svc-row:focus-visible .svc-arrow {
   transform: translateX(6px);
 }
@@ -1133,10 +1182,12 @@ a { color: inherit; text-decoration: none; }
   pointer-events: auto;
 }
 
-.wa-float:hover {
-  background: #1ebe6a;
-  transform: translateY(-2px) scale(1);
-  box-shadow: 0 12px 28px rgba(37, 211, 102, 0.55);
+@media (hover: hover) {
+  .wa-float:hover {
+    background: #1ebe6a;
+    transform: translateY(-2px) scale(1);
+    box-shadow: 0 12px 28px rgba(37, 211, 102, 0.55);
+  }
 }
 
 .wa-float:focus-visible {
@@ -1226,10 +1277,12 @@ a { color: inherit; text-decoration: none; }
   pointer-events: auto;
 }
 
-.back-to-top:hover {
-  background: var(--deep-navy, #011f3a);
-  transform: translateY(-2px) scale(1);
-  box-shadow: 0 12px 28px rgba(1, 42, 74, 0.45);
+@media (hover: hover) {
+  .back-to-top:hover {
+    background: var(--deep-navy, #011f3a);
+    transform: translateY(-2px) scale(1);
+    box-shadow: 0 12px 28px rgba(1, 42, 74, 0.45);
+  }
 }
 
 .back-to-top:focus-visible {
