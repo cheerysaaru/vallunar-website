@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 
 const COOKIE_CONSENT_STORAGE_KEY = "vallunar-cookie-consent";
@@ -93,6 +93,7 @@ export function CookieConsentBanner() {
   const [visible, setVisible] = useState(false);
   const [decided, setDecided] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
+  const bannerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (getDecidedFromStorage()) {
@@ -102,6 +103,25 @@ export function CookieConsentBanner() {
     const timer = window.setTimeout(() => setVisible(true), 15000);
     return () => window.clearTimeout(timer);
   }, []);
+
+  // Focus the banner when it appears so keyboard users land on it.
+  useEffect(() => {
+    if (visible && !decided) {
+      bannerRef.current?.focus();
+    }
+  }, [visible, decided]);
+
+  // Close (accept all) on Escape.
+  useEffect(() => {
+    if (!visible || decided) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        acceptAll();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
 
   const decide = () => {
     setDecided(true);
@@ -128,7 +148,9 @@ export function CookieConsentBanner() {
 
   return (
     <div
-      className="consent-banner fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] left-1/2 z-50 w-[min(620px,calc(100vw-24px))] -translate-x-1/2 rounded-[28px] border border-[var(--border-light)] bg-white px-5 py-5 shadow-[0_18px_50px_rgba(0,43,82,.25)] backdrop-blur-xl sm:bottom-5 sm:w-[min(620px,calc(100vw-32px))] sm:px-6 md:border-white/60 md:bg-white/80"
+      ref={bannerRef}
+      tabIndex={-1}
+      className="consent-banner fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] left-1/2 z-50 w-[min(620px,calc(100vw-24px))] -translate-x-1/2 rounded-[28px] border border-[var(--border-light)] bg-white px-5 py-5 shadow-[0_18px_50px_rgba(0,43,82,.25)] backdrop-blur-xl sm:bottom-5 sm:w-[min(620px,calc(100vw-32px))] sm:px-6 md:border-white/60 md:bg-white/80 focus:outline-none"
       role="dialog"
       aria-label="Cookie consent"
     >
@@ -146,6 +168,7 @@ export function CookieConsentBanner() {
           <span className="text-sm font-medium" style={{ color: "var(--text-dark)" }}>We use cookies to improve your experience</span>
         </div>
         <button
+          type="button"
           onClick={acceptAll}
           className="-mr-1 -mt-1 p-1 transition hover:opacity-70"
           style={{ color: "var(--text-dark)" }}
@@ -156,6 +179,7 @@ export function CookieConsentBanner() {
       </div>
 
       <button
+        type="button"
         onClick={() => setShowOptions((v) => !v)}
         className="mt-2 text-xs underline underline-offset-2 transition hover:opacity-70"
         style={{ color: "var(--text-muted)" }}
@@ -184,6 +208,7 @@ export function CookieConsentBanner() {
             );
           })}
           <button
+            type="button"
             onClick={decide}
             className="mt-3 rounded-full border border-[var(--border-light)] px-4 py-1.5 text-xs transition hover:bg-[var(--light-tint)]"
             style={{ color: "var(--text-muted)" }}
@@ -195,6 +220,7 @@ export function CookieConsentBanner() {
 
       <div className="mt-4 flex flex-col gap-2.5 sm:flex-row sm:gap-3">
         <button
+          type="button"
           onClick={rejectNonEssential}
           className="flex-1 rounded-full border border-[var(--border-light)] px-4 py-2.5 text-sm transition hover:bg-[var(--light-tint)] sm:py-2" style={{ color: "var(--text-dark)" }}
           aria-label="Reject non-essential cookies"
@@ -202,6 +228,7 @@ export function CookieConsentBanner() {
           Reject non-essential
         </button>
         <button
+          type="button"
           onClick={acceptAll}
           className="flex-1 rounded-full bg-[var(--mid-blue)] px-4 py-2.5 text-sm text-white transition hover:bg-[var(--mid-blue-hover)] sm:py-2"
           aria-label="Accept all cookies"
