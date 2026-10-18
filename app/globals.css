@@ -1247,10 +1247,65 @@ a { color: inherit; text-decoration: none; }
   }
 }
 
-/* Print: hide both floating buttons */
+/* ============================================================
+   PRINT STYLES — hide interactive chrome, flatten dark surfaces,
+   avoid page breaks inside cards, and show link URLs.
+   ============================================================ */
 @media print {
+  /* Hide floating / interactive chrome */
   .wa-float,
-  .back-to-top {
+  .back-to-top,
+  .scroll-progress,
+  .skip-link,
+  nav[aria-label="Breadcrumb"] {
     display: none !important;
+  }
+
+  /* Hide the sticky navbar */
+  header,
+  nav:not([aria-label="Breadcrumb"]) {
+    position: static !important;
+    box-shadow: none !important;
+  }
+
+  /* Flatten dark backgrounds to white for legibility */
+  body,
+  main {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Show link URLs for external links */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    color: #555;
+    word-break: break-all;
+  }
+
+  /* Avoid page breaks inside cards / sections */
+  section,
+  article,
+  .card,
+  h1,
+  h2,
+  h3 {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Expand all collapsible content */
+  details {
+    open: true;
+  }
+
+  /* Kill animations */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
   }
 }
