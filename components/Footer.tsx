@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import { navigation, site } from "@/lib/data";
+import CopyButton from "@/components/CopyButton";
 
 export default function Footer() {
   const clearCookieChoice = () => {
@@ -41,9 +42,24 @@ export default function Footer() {
         <div>
           <h2 className="eyebrow mb-4" style={{ color: "rgba(255,255,255,0.65)" }}>Contact</h2>
           <ul className="space-y-2 text-base text-white/80">
-            <li><a className="focus-ring hover:text-white" href={`mailto:${site.email}`}>{site.email}</a></li>
-            <li><a className="focus-ring hover:text-white" href={`tel:${site.phone.replace(/\s/g, "")}`}>{site.phone}</a></li>
-            <li><a className="focus-ring hover:text-white" href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
+            <li>
+              <div className="flex items-center gap-2">
+                <a className="focus-ring hover:text-white" href={`mailto:${site.email}`}>{site.email}</a>
+                <CopyButton text={site.email} label="Copy email" />
+              </div>
+            </li>
+            <li>
+              <div className="flex items-center gap-2">
+                <a className="focus-ring hover:text-white" href={`tel:${site.phone.replace(/\s/g, "")}`}>{site.phone}</a>
+                <CopyButton text={site.phone} label="Copy phone" />
+              </div>
+            </li>
+            <li>
+              <div className="flex items-center gap-2">
+                <a className="focus-ring hover:text-white" href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+                <CopyButton text={site.whatsapp} label="Copy WhatsApp number" />
+              </div>
+            </li>
             <li className="text-white/70">{site.address}</li>
           </ul>
         </div>
