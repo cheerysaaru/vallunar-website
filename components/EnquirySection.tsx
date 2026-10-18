@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { contactConfig } from "@/lib/contact-config";
+import { getStoredUtm, type UtmParams } from "@/lib/utm";
 import {
   AREAS_OF_INTEREST,
   validateArea,
@@ -137,6 +138,12 @@ function FormBody({
 
   const lastValuesRef = useRef<FormValues>(null);
 
+  // UTM campaign values captured by UtmCapture on landing (stored in sessionStorage).
+  const [utm, setUtm] = useState<UtmParams>({});
+  useEffect(() => {
+    setUtm(getStoredUtm());
+  }, []);
+
   // Keep a draft in the parent so switching enquiry cards never loses input.
   useEffect(() => {
     const subscription = watch((values) => onDraft(values as FormValues));
@@ -150,7 +157,7 @@ function FormBody({
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...values, enquiryType, startedAt }),
+        body: JSON.stringify({ ...values, enquiryType, startedAt, ...utm }),
       });
       const data = (await response.json().catch(() => ({}))) as {
         ok?: boolean;
@@ -332,6 +339,13 @@ function FormBody({
           <label htmlFor="website">Leave this field empty</label>
           <input id="website" type="text" tabIndex={-1} autoComplete="off" {...register("website")} />
         </div>
+
+        {/* UTM tracking (first-party, sessionStorage — values already validated by UtmCapture) */}
+        <input type="hidden" name="utm_source" value={utm.utm_source ?? ""} readOnly />
+        <input type="hidden" name="utm_medium" value={utm.utm_medium ?? ""} readOnly />
+        <input type="hidden" name="utm_campaign" value={utm.utm_campaign ?? ""} readOnly />
+        <input type="hidden" name="utm_term" value={utm.utm_term ?? ""} readOnly />
+        <input type="hidden" name="utm_content" value={utm.utm_content ?? ""} readOnly />
 
         {status.kind === "error" && status.message && (
           <div className="mt-5 rounded-xl border border-[var(--error)]/40 bg-[var(--error-bg)] px-4 py-3 text-sm" style={{ color: "var(--error)" }}>
