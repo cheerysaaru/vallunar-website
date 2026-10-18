@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Mail } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { site } from "@/lib/data";
@@ -123,6 +124,56 @@ export default function Navbar({ overlay = true }: { overlay?: boolean }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [mobileOpen]);
 
+  const pathname = usePathname();
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    const focusable = panel.querySelectorAll<HTMLElement>(
+      'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusable.length === 0) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    first.focus();
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      const active = document.activeElement;
+      if (e.shiftKey) {
+        if (active === first || !panel.contains(active)) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (active === last || !panel.contains(active)) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    panel.addEventListener("keydown", onKeyDown);
+    return () => {
+      panel.removeEventListener("keydown", onKeyDown);
+      dotsRef.current?.focus();
+    };
+  }, [mobileOpen]);
+
   useEffect(() => {
     let frame = 0;
     const update = () => {
@@ -171,14 +222,13 @@ export default function Navbar({ overlay = true }: { overlay?: boolean }) {
         </Link>
 
         {/* Sliding highlight — sits at z-index 0 inside the links container */}
-        <div ref={linksRef} className="notch-links" role="menubar">
+        <div ref={linksRef} className="notch-links">
           <span ref={blobRef} className="blob" aria-hidden="true" />
           {navLinks.map((item) => (
             <a
               key={item.key}
               className={`notch-link${targetKey === item.key ? " is-active" : ""}`}
               href={item.href}
-              role="menuitem"
               onMouseEnter={() => setHoverKey(item.key)}
               onFocus={() => setHoverKey(item.key)}
             >
@@ -218,7 +268,6 @@ export default function Navbar({ overlay = true }: { overlay?: boolean }) {
         ref={panelRef}
         id="mobile-menu-panel"
         className={`notch-mobile-panel ${mobileOpen ? "open" : ""}`}
-        role="menu"
         aria-label="Mobile navigation"
       >
         {navLinks.map((item) => (
@@ -226,7 +275,6 @@ export default function Navbar({ overlay = true }: { overlay?: boolean }) {
             key={item.key}
             className="notch-mobile-link"
             href={item.href}
-            role="menuitem"
             onClick={closeMobileMenu}
           >
             {item.label}
@@ -235,7 +283,6 @@ export default function Navbar({ overlay = true }: { overlay?: boolean }) {
         <Link
           href="/contact"
           className="notch-mobile-cta"
-          role="menuitem"
           onClick={closeMobileMenu}
         >
           <Mail size={14} aria-hidden="true" />
