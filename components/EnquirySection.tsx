@@ -354,10 +354,17 @@ export default function EnquirySection() {
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const draftRef = useRef<FormValues>(EMPTY_VALUES);
   const startedAtRef = useRef<number>(Date.now());
+  const successHeadingRef = useRef<HTMLHeadingElement>(null);
 
   const onDraft = useCallback((values: FormValues) => {
     draftRef.current = values;
   }, []);
+
+  useEffect(() => {
+    if (status.kind === "success") {
+      successHeadingRef.current?.focus();
+    }
+  }, [status.kind]);
 
   const selectCard = (next: EnquiryType) => {
     if (next === type) return;
@@ -422,9 +429,15 @@ export default function EnquirySection() {
               <span className="mb-5 flex h-12 w-12 items-center justify-center rounded-full border border-[var(--mid-blue)] text-[var(--mid-blue)]">
                 <Check size={22} aria-hidden="true" />
               </span>
-              <p role="status" aria-live="polite" className="display text-3xl text-[var(--text-dark)]">
+              <h2
+                ref={successHeadingRef}
+                tabIndex={-1}
+                role="status"
+                aria-live="polite"
+                className="display text-3xl text-[var(--text-dark)]"
+              >
                 {status.message || "Thank you! We'll get back to you soon."}
-              </p>
+              </h2>
               <p className="mt-3 max-w-sm text-sm leading-6" style={{ color: "var(--text-muted)" }}>
                 Your enquiry has reached the right team. We usually reply within one business day.
               </p>
