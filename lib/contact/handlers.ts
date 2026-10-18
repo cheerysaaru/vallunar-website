@@ -23,6 +23,11 @@ export type ContactPayload = {
   consent: boolean;
   marketing: boolean;
   ip?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_term?: string;
+  utm_content?: string;
 };
 
 export type ContactEnv = { apiKey: string; to: string; from: string };
@@ -86,6 +91,17 @@ function row(label: string, value: string): string {
   </tr>`;
 }
 
+/** Build a human-readable "Source" string from UTM fields (raw — caller escapes). */
+function utmSourceLine(payload: ContactPayload): string {
+  const parts: string[] = [];
+  const keys: (keyof ContactPayload)[] = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
+  for (const key of keys) {
+    const value = sanitize(payload[key], 100);
+    if (value) parts.push(`${key}=${value}`);
+  }
+  return parts.join("&");
+}
+
 /** Build the internal notification email (all dynamic values escaped). */
 function buildEmailHtml(payload: ContactPayload): string {
   const messageHtml = escapeHtml(payload.message).replace(/\n/g, "<br />");
@@ -110,6 +126,7 @@ function buildEmailHtml(payload: ContactPayload): string {
           ${row("Area of interest", escapeHtml(area))}
           ${row("Marketing consent", payload.marketing ? "Yes" : "No")}
           ${row("Submitted from IP", payload.ip ? escapeHtml(payload.ip) : "—")}
+          ${row("Source", escapeHtml(utmSourceLine(payload)) || "—")}
           ${row("Message", messageHtml)}
         </table>
       </div>
@@ -169,7 +186,8 @@ export async function sendEmail(payload: ContactPayload, env: ContactEnv): Promi
       `${enquirySubject(payload)}\n\n` +
       `Name: ${payload.name}\nEmail: ${payload.email}\nPhone: ${payload.phone || "—"}\n` +
       `Company: ${payload.company || "—"}\nArea: ${payload.area}\n` +
-      `Marketing consent: ${payload.marketing ? "Yes" : "No"}\n\nMessage:\n${payload.message}`,
+      `Marketing consent: ${payload.marketing ? "Yes" : "No"}\n` +
+      `Source: ${utmSourceLine(payload) || "—"}\n\nMessage:\n${payload.message}`,
   });
 }
 

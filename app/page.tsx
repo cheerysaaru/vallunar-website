@@ -9,7 +9,7 @@ import Faq from "@/components/Faq";
 import Reveal from "@/components/Reveal";
 export default function HomePage() {
   return (
-    <main>
+    <div>
       <Hero />
       <Reveal><Services /></Reveal>
       <Reveal><Products /></Reveal>
@@ -19,6 +19,6 @@ export default function HomePage() {
       <Reveal><About /></Reveal>
       <Reveal><Stats /></Reveal>
       <Reveal><Faq /></Reveal>
-    </main>
+    </div>
   );
 }

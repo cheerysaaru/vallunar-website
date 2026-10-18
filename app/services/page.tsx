@@ -38,7 +38,7 @@ function ServicesGrid() {
 
 export default function ServicesPage() {
   return (
-    <main>
+    <div>
       {/* Hero Section — same heading style as Products / Case Studies */}
       <section id="top" className="bg-[var(--navy)] px-6 pb-16 pt-36 text-white lg:px-8">
         <div className="mx-auto max-w-[1240px]">
@@ -71,6 +71,6 @@ export default function ServicesPage() {
       </section>
       </Reveal>
 
-      </main>
+      </div>
   );
 }

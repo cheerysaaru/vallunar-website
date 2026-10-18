@@ -87,7 +87,7 @@ function FounderCard({ founder }: { founder: typeof founders[0] }) {
 
 export default function AboutPage() {
   return (
-    <main>
+    <div>
       {/* Hero Section */}
       <section id="top" className="relative isolate grid min-h-[60vh] place-items-center overflow-hidden bg-[radial-gradient(circle_at_50%_40%,var(--navy-dark)_0%,var(--navy)_45%,var(--navy-darker)_100%)] text-center px-6 py-20">
         <div className="relative z-10 max-w-3xl">
@@ -106,7 +106,7 @@ export default function AboutPage() {
         <div className="eyebrow mb-5">What we do</div>
         <h2 className="display max-w-3xl text-5xl text-[var(--mid-blue)] sm:text-6xl">One team.<br />Every digital need.</h2>
         <p className="mt-8 max-w-2xl text-lg leading-8" style={{ color: "var(--text-muted)" }}>
-          We're a software and digital solutions company based in Jaffna, Sri Lanka. Since 2023, we've been building
+          We're a software and digital solutions company based in Sri Lanka. Since 2023, we've been building
           websites, custom software, mobile apps, and IT infrastructure for businesses that need technology that just works.
           No fluff, no over-engineering — just reliable systems that help you grow.
         </p>
@@ -122,7 +122,7 @@ export default function AboutPage() {
           {[
             { title: "Understand your business", body: "We start by learning how your business runs, so what we build is affordable, reliable and fits your needs." },
             { title: "Build it, show it early", body: "You see working progress early, so changes are quick and the final product fits how you actually work." },
-            { title: "Support it after launch", body: "Local support from our team in Jaffna keeps your systems running as your business grows." },
+            { title: "Support it after launch", body: "Local support from our team in Sri Lanka keeps your systems running as your business grows." },
           ].map((principle, index) => (
             <article key={index} className="rounded-[24px] border border-[var(--border-light)] bg-[var(--light-tint)] p-7 hover:border-[var(--mid-blue)] transition">
               <h3 className="text-xl font-semibold text-[var(--text-dark)]">{principle.title}</h3>
@@ -166,7 +166,7 @@ export default function AboutPage() {
             <div className="eyebrow mt-2">Core products</div>
           </div>
           <div>
-            <div className="text-4xl font-light text-[var(--mid-blue)] sm:text-5xl">Jaffna</div>
+            <div className="text-4xl font-light text-[var(--mid-blue)] sm:text-5xl">Sri Lanka</div>
             <div className="eyebrow mt-2">Based in the North</div>
           </div>
           <div>
@@ -177,6 +177,6 @@ export default function AboutPage() {
       </section>
       </Reveal>
 
-      </main>
+      </div>
   );
 }

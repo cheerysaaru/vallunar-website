@@ -4,6 +4,7 @@
  */
 import { Clock, Mail, Phone } from "lucide-react";
 import { contactConfig } from "@/lib/contact-config";
+import CopyButton from "@/components/CopyButton";
 
 export default function ContactDetails() {
   const { contactEmail, contactPhone, socialLinks, businessHours } = contactConfig;
@@ -25,13 +26,16 @@ export default function ContactDetails() {
               <Mail size={16} aria-hidden="true" />
             </span>
             <div className="text-sm font-medium" style={{ color: "var(--text-muted)" }}>Business email</div>
-            {isEmailAddress ? (
-              <a href={`mailto:${contactEmail}`} className="focus-ring mt-1 block break-all text-sm transition" style={{ color: "var(--text-muted)" }}>
-                {contactEmail}
-              </a>
-            ) : (
-              <div className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>{contactEmail}</div>
-            )}
+            <div className="mt-1 flex items-center gap-2 break-all text-sm transition" style={{ color: "var(--text-muted)" }}>
+              {isEmailAddress ? (
+                <a href={`mailto:${contactEmail}`} className="focus-ring" style={{ color: "var(--text-muted)" }}>
+                  {contactEmail}
+                </a>
+              ) : (
+                <span style={{ color: "var(--text-muted)" }}>{contactEmail}</span>
+              )}
+              <CopyButton text={contactEmail} label="Copy email" />
+            </div>
           </div>
         )}
 
@@ -41,9 +45,12 @@ export default function ContactDetails() {
               <Phone size={16} aria-hidden="true" />
             </span>
             <div className="text-sm font-medium" style={{ color: "var(--text-muted)" }}>Business phone</div>
-            <a href={telHref} className="focus-ring mt-1 block text-sm transition" style={{ color: "var(--text-muted)" }}>
-              {contactPhone}
-            </a>
+            <div className="mt-1 flex items-center gap-2 text-sm transition" style={{ color: "var(--text-muted)" }}>
+              <a href={telHref} className="focus-ring" style={{ color: "var(--text-muted)" }}>
+                {contactPhone}
+              </a>
+              <CopyButton text={contactPhone} label="Copy phone" />
+            </div>
           </div>
         )}
 

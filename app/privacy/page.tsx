@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/lib/data";
+import { getLastUpdated, formatLastUpdated } from "@/lib/last-updated";
 
 /**
  * Sample Privacy Policy — plain-language template for Vallunar Groups.
@@ -106,7 +107,7 @@ const sections = [
 
 export default function PrivacyPage() {
   return (
-    <main>
+    <div>
       <section id="top" className="mx-auto max-w-[1240px] px-6 pb-16 pt-32 lg:px-8">
         <nav aria-label="Breadcrumb" className="mb-9">
           <ol className="flex flex-wrap items-center gap-2 text-sm" style={{ color: "var(--text-muted)" }}>
@@ -120,7 +121,10 @@ export default function PrivacyPage() {
 
         <header className="max-w-3xl">
           <h1 className="display text-5xl text-[var(--text-dark)] sm:text-6xl">{PAGE_TITLE}</h1>
-          <p className="mt-4 text-sm" style={{ color: "var(--text-muted)" }}>Last updated: October 2026</p>
+          <p className="mt-4 text-sm" style={{ color: "var(--text-muted)" }}>
+            Last updated:{" "}
+            <time dateTime={getLastUpdated("/privacy")}>{formatLastUpdated(getLastUpdated("/privacy"))}</time>
+          </p>
           <p className="mt-6 text-base leading-7" style={{ color: "var(--text-muted)" }}>
             This policy explains what happens to your information when you contact us or use this website. It is
             written in plain language on purpose.
@@ -158,6 +162,6 @@ export default function PrivacyPage() {
         </div>
       </section>
 
-      </main>
+      </div>
   );
 }

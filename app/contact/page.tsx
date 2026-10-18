@@ -47,7 +47,7 @@ const quickLinks = [
 
 export default function ContactPage() {
   return (
-    <main>
+    <div>
       {/* Header: breadcrumb + centered heading */}
       <section id="top" className="mx-auto max-w-[1240px] px-6 pb-10 pt-32 lg:px-8">
         <nav aria-label="Breadcrumb" className="mb-9">
@@ -100,6 +100,6 @@ export default function ContactPage() {
       </section>
       </Reveal>
 
-      </main>
+      </div>
   );
 }

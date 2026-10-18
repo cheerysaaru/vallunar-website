@@ -4,8 +4,8 @@ export const site = {
   name: "Vallunar",
   legalName: "Vallunar Groups (PVT) LTD",
   tagline: "Independent minds. Shared ambition.",
-  description: "Websites, software and systems that actually work — built in Jaffna for businesses that need reliable, affordable technology.",
-  location: "Jaffna, Sri Lanka",
+  description: "Websites, software and systems that actually work — built in Sri Lanka for businesses that need reliable, affordable technology.",
+  location: "Sri Lanka",
   founded: "2023",
   phone: "+94 71 709 7166",
   email: "mail@vallunar.com",
@@ -56,14 +56,14 @@ export const products = [
 export const stats = [
   { value: "2023", label: "Founded" },
   { value: "2", label: "Core products" },
-  { value: "Jaffna", label: "Based in the North" },
+  { value: "Sri Lanka", label: "Based in the island" },
   { value: "685+", label: "LinkedIn followers" }
 ];
 
 export const principles = [
   { title: "Understand your business", body: "We start by learning how your business runs, so what we build is affordable, reliable and fits your needs." },
   { title: "Build it, show it early", body: "You see working progress early, so changes are quick and the final product fits how you actually work." },
-  { title: "Support it after launch", body: "Local support from our team in Jaffna keeps your systems running as your business grows." }
+  { title: "Support it after launch", body: "Local support from our team in Sri Lanka keeps your systems running as your business grows." }
 ];
 
 export const faqs = [
@@ -73,11 +73,11 @@ export const faqs = [
   },
   {
     question: "Do you work with small businesses?",
-    answer: "Yes. Most of our work is for small and medium businesses in Jaffna and across Sri Lanka. We scope the project to the budget you actually have, and we tell you plainly when something is not worth building yet."
+    answer: "Yes. Most of our work is for small and medium businesses across Sri Lanka. We scope the project to the budget you actually have, and we tell you plainly when something is not worth building yet."
   },
   {
     question: "How does a project work?",
-    answer: "Three steps. We learn how your business runs. We build it and show you working software early, not at the end. Then we launch it and stay available for support — we are a local team in Jaffna, not a faceless ticket queue."
+    answer: "Three steps. We learn how your business runs. We build it and show you working software early, not at the end. Then we launch it and stay available for support — we are a local team in Sri Lanka, not a faceless ticket queue."
   },
   {
     question: "How do we start?",

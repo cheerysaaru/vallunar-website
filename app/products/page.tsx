@@ -6,7 +6,7 @@ import Reveal from "@/components/Reveal";
 
 const PAGE_TITLE = "Products";
 const PAGE_DESCRIPTION =
-  "txtmsg.lk SMS gateway and ASIT POS — products built and run by Vallunar in Jaffna, Sri Lanka.";
+  "txtmsg.lk SMS gateway and ASIT POS — products built and run by Vallunar in Sri Lanka.";
 
 export const metadata: Metadata = {
   title: PAGE_TITLE,
@@ -88,8 +88,8 @@ function ProductBlock({ product, index }: { product: (typeof products)[number]; 
           ))}
         </ul>
 
-        <Link href="/contact" className="fill-btn focus-ring mt-9 inline-flex min-h-12 items-center px-7">
-          <span>Talk to us <ArrowUpRight size={16} aria-hidden="true" /></span>
+        <Link href="/contact" className={`focus-ring mt-9 inline-flex min-h-12 items-center px-7 ${dark ? "fill-btn fill-btn-dark" : "fill-btn"}`}>
+          <span className={dark ? "font-semibold" : ""}>Talk to us <ArrowUpRight size={16} aria-hidden="true" /></span>
         </Link>
       </div>
     </article>
@@ -98,7 +98,7 @@ function ProductBlock({ product, index }: { product: (typeof products)[number]; 
 
 export default function ProductsPage() {
   return (
-    <main>
+    <div>
       <section id="top" className="bg-[var(--navy)] px-6 pb-16 pt-36 text-white lg:px-8">
         <div className="mx-auto max-w-[1240px]">
           <h1 className="display text-[clamp(2.25rem,5.5vw,3.75rem)] text-white">Products</h1>
@@ -131,6 +131,6 @@ export default function ProductsPage() {
       </section>
       </Reveal>
 
-      </main>
+      </div>
   );
 }

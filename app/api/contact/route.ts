@@ -53,6 +53,12 @@ const contactSchema = z.object({
   enquiryType: z.enum(ENQUIRY_TYPES, { message: "Invalid enquiry type." }),
   consent: z.literal(true, { message: "Please agree to be contacted about your enquiry." }),
   marketing: z.boolean().optional(),
+  // UTM campaign tracking (first-party, sessionStorage on the client).
+  utm_source: z.string().max(100).optional().or(z.literal("")),
+  utm_medium: z.string().max(100).optional().or(z.literal("")),
+  utm_campaign: z.string().max(100).optional().or(z.literal("")),
+  utm_term: z.string().max(100).optional().or(z.literal("")),
+  utm_content: z.string().max(100).optional().or(z.literal("")),
 });
 
 /**
@@ -204,6 +210,11 @@ export async function POST(req: Request) {
     consent: true,
     marketing: input.marketing === true,
     ip: clientIp(req),
+    utm_source: input.utm_source ? sanitize(input.utm_source, 100) : undefined,
+    utm_medium: input.utm_medium ? sanitize(input.utm_medium, 100) : undefined,
+    utm_campaign: input.utm_campaign ? sanitize(input.utm_campaign, 100) : undefined,
+    utm_term: input.utm_term ? sanitize(input.utm_term, 100) : undefined,
+    utm_content: input.utm_content ? sanitize(input.utm_content, 100) : undefined,
   };
 
   try {

@@ -10,8 +10,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { contactConfig } from "@/lib/contact-config";
+import { getStoredUtm, type UtmParams } from "@/lib/utm";
 import {
   AREAS_OF_INTEREST,
+  LIMITS,
   validateArea,
   validateCompany,
   validateConsent,
@@ -135,19 +137,30 @@ function FormBody({
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ defaultValues, shouldFocusError: true });
 
+  const lastValuesRef = useRef<FormValues>(null);
+
+  // UTM campaign values captured by UtmCapture on landing (stored in sessionStorage).
+  const [utm, setUtm] = useState<UtmParams>({});
+  useEffect(() => {
+    setUtm(getStoredUtm());
+  }, []);
+
   // Keep a draft in the parent so switching enquiry cards never loses input.
   useEffect(() => {
     const subscription = watch((values) => onDraft(values as FormValues));
     return () => subscription.unsubscribe();
   }, [watch, onDraft]);
 
-  const submit = handleSubmit(async (values) => {
+  const messageLength = (watch("message") || "").length;
+
+  const runSubmit = async (values: FormValues) => {
+    lastValuesRef.current = values;
     setStatus({ kind: "idle" });
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...values, enquiryType, startedAt }),
+        body: JSON.stringify({ ...values, enquiryType, startedAt, ...utm }),
       });
       const data = (await response.json().catch(() => ({}))) as {
         ok?: boolean;
@@ -174,7 +187,13 @@ function FormBody({
     } catch {
       setStatus({ kind: "error", message: "Something went wrong. Please check your connection and try again." });
     }
-  });
+  };
+
+  const submit = handleSubmit(runSubmit);
+
+  const retrySubmit = () => {
+    if (lastValuesRef.current) runSubmit(lastValuesRef.current);
+  };
 
   const copy = FORM_COPY[enquiryType];
 
@@ -283,6 +302,13 @@ function FormBody({
               {...register("message", { validate: validateMessage })}
             />
             {errors.message && <FieldError id="message" message={errors.message.message as string} />}
+            <p
+              aria-live="polite"
+              className="mt-1 text-right text-xs"
+              style={{ color: messageLength > LIMITS.message ? "var(--error)" : "var(--text-muted)" }}
+            >
+              {messageLength} / {LIMITS.message} characters
+            </p>
           </div>
         </div>
 
@@ -324,10 +350,25 @@ function FormBody({
           <input id="website" type="text" tabIndex={-1} autoComplete="off" {...register("website")} />
         </div>
 
+        {/* UTM tracking (first-party, sessionStorage — values already validated by UtmCapture) */}
+        <input type="hidden" name="utm_source" value={utm.utm_source ?? ""} readOnly />
+        <input type="hidden" name="utm_medium" value={utm.utm_medium ?? ""} readOnly />
+        <input type="hidden" name="utm_campaign" value={utm.utm_campaign ?? ""} readOnly />
+        <input type="hidden" name="utm_term" value={utm.utm_term ?? ""} readOnly />
+        <input type="hidden" name="utm_content" value={utm.utm_content ?? ""} readOnly />
+
         {status.kind === "error" && status.message && (
-          <p role="alert" className="mt-5 rounded-xl border border-[var(--error)]/40 bg-[var(--error-bg)] px-4 py-3 text-sm" style={{ color: "var(--error)" }}>
-            {status.message}
-          </p>
+          <div className="mt-5 rounded-xl border border-[var(--error)]/40 bg-[var(--error-bg)] px-4 py-3 text-sm" style={{ color: "var(--error)" }}>
+            <p role="alert">{status.message}</p>
+            <button
+              type="button"
+              onClick={retrySubmit}
+              className="mt-3 inline-flex items-center gap-2 rounded-full border border-[var(--error)]/40 bg-white px-4 py-1.5 text-sm text-[var(--error)] transition hover:bg-[var(--error-bg)] focus-ring"
+              aria-label="Retry sending"
+            >
+              Try again
+            </button>
+          </div>
         )}
 
         <button type="submit" disabled={isSubmitting} className="fill-btn focus-ring mt-6 w-full justify-center disabled:pointer-events-none disabled:opacity-70">
@@ -354,10 +395,17 @@ export default function EnquirySection() {
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const draftRef = useRef<FormValues>(EMPTY_VALUES);
   const startedAtRef = useRef<number>(Date.now());
+  const successHeadingRef = useRef<HTMLHeadingElement>(null);
 
   const onDraft = useCallback((values: FormValues) => {
     draftRef.current = values;
   }, []);
+
+  useEffect(() => {
+    if (status.kind === "success") {
+      successHeadingRef.current?.focus();
+    }
+  }, [status.kind]);
 
   const selectCard = (next: EnquiryType) => {
     if (next === type) return;
@@ -422,9 +470,15 @@ export default function EnquirySection() {
               <span className="mb-5 flex h-12 w-12 items-center justify-center rounded-full border border-[var(--mid-blue)] text-[var(--mid-blue)]">
                 <Check size={22} aria-hidden="true" />
               </span>
-              <p role="status" aria-live="polite" className="display text-3xl text-[var(--text-dark)]">
+              <h2
+                ref={successHeadingRef}
+                tabIndex={-1}
+                role="status"
+                aria-live="polite"
+                className="display text-3xl text-[var(--text-dark)]"
+              >
                 {status.message || "Thank you! We'll get back to you soon."}
-              </p>
+              </h2>
               <p className="mt-3 max-w-sm text-sm leading-6" style={{ color: "var(--text-muted)" }}>
                 Your enquiry has reached the right team. We usually reply within one business day.
               </p>

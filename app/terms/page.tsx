@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { site } from "@/lib/data";
+import { getLastUpdated, formatLastUpdated } from "@/lib/last-updated";
 
 const PAGE_TITLE = "Terms of Service";
 const PAGE_DESCRIPTION =
@@ -118,7 +119,7 @@ const sections = [
 
 export default function TermsPage() {
   return (
-    <main>
+    <div>
       <section id="top" className="mx-auto max-w-[1240px] px-6 pb-16 pt-32 lg:px-8">
         <nav aria-label="Breadcrumb" className="mb-9">
           <ol className="flex flex-wrap items-center gap-2 text-sm" style={{ color: "var(--text-muted)" }}>
@@ -132,7 +133,10 @@ export default function TermsPage() {
 
         <header className="max-w-3xl">
           <h1 className="display text-5xl text-[var(--text-dark)] sm:text-6xl">{PAGE_TITLE}</h1>
-          <p className="mt-4 text-sm" style={{ color: "var(--text-muted)" }}>Last updated: October 2026</p>
+          <p className="mt-4 text-sm" style={{ color: "var(--text-muted)" }}>
+            Last updated:{" "}
+            <time dateTime={getLastUpdated("/terms")}>{formatLastUpdated(getLastUpdated("/terms"))}</time>
+          </p>
         </header>
 
         <div className="mt-14 max-w-3xl space-y-10">
@@ -156,6 +160,6 @@ export default function TermsPage() {
         </div>
       </section>
 
-      </main>
+      </div>
   );
 }

@@ -11,11 +11,11 @@ export default function About() {
           <div>
             <div className="eyebrow mb-4">About</div>
             <h2 className="display text-[clamp(2rem,4.5vw,3.25rem)] text-[var(--text-dark)]">
-              Built in Jaffna, for businesses that need software to work.
+              Built in Sri Lanka, for businesses that need software to work.
             </h2>
             <p className="mt-6 max-w-[46ch] text-base leading-7 text-[var(--text-muted)]">
-              Vallunar Groups (PVT) LTD started in 2023 in Jaffna, in the Northern
-              Province of Sri Lanka. We are a small local team — you talk to the
+              Vallunar Groups (PVT) LTD started in 2023, in the island of Sri
+              Lanka. We are a small local team — you talk to the
               people who build your system, not a call centre.
             </p>
             <p className="mt-4 max-w-[46ch] text-base leading-7 text-[var(--text-muted)]">

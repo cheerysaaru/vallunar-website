@@ -64,6 +64,41 @@ body { margin: 0; background: var(--bg-warm); color: #0a2a4a; font-family: var(-
 a { color: inherit; text-decoration: none; }
 ::selection { background: #a9d6e5; color: #0a2a4a; }
 
+/* Skip-to-content link — first focusable element on every page.
+   Visually hidden until keyboard focus, then appears at the top-left
+   using existing colors. Jumps to #main-content (tabIndex={-1}). */
+.skip-link {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10000;
+  transform: translateY(-100%);
+  background: var(--navy);
+  color: #ffffff;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--notch-font);
+  border-radius: 0 0 var(--notch-radius) 0;
+  border-bottom: 1px solid var(--border-light);
+  border-right: 1px solid var(--border-light);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s var(--soft);
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skip-link {
+    transition: none !important;
+  }
+}
+
 @layer utilities {
   .eyebrow { @apply font-medium uppercase tracking-[0.14em]; font-family: var(--font-dm-mono), ui-monospace, monospace; font-size: 12px; color: var(--text-muted); }
   .display { @apply leading-[.98] tracking-[-.045em]; font-family: var(--font-plus-jakarta), var(--font-inter), sans-serif; font-weight: 600; }
@@ -88,10 +123,12 @@ a { color: inherit; text-decoration: none; }
   animation-delay: calc(.35s + var(--i, 0) * .03s);
   transition: transform .35s var(--soft), color .35s var(--ease), text-shadow .35s var(--ease);
 }
-.hero-char:hover {
-  transform: translateY(-.14em) scale(1.15) rotate(-4deg);
-  color: var(--accent-cyan);
-  text-shadow: 0 12px 28px rgba(97, 165, 194, .55);
+@media (hover: hover) {
+  .hero-char:hover {
+    transform: translateY(-.14em) scale(1.15) rotate(-4deg);
+    color: var(--accent-cyan);
+    text-shadow: 0 12px 28px rgba(97, 165, 194, .55);
+  }
 }
 
 /* Hero — content below the headline fades in after the headline animation */
@@ -278,13 +315,15 @@ a { color: inherit; text-decoration: none; }
   background: #ffffff;
 }
 
-.hero-cta:hover {
-  color: var(--navy-darker);
-  box-shadow: 0 16px 36px rgba(255, 255, 255, 0.3);
-}
+@media (hover: hover) {
+  .hero-cta:hover {
+    color: var(--navy-darker);
+    box-shadow: 0 16px 36px rgba(255, 255, 255, 0.3);
+  }
 
-.hero-cta:hover > span {
-  color: var(--navy-darker);
+  .hero-cta:hover > span {
+    color: var(--navy-darker);
+  }
 }
 
 .hero-cta:focus-visible { outline: 2px solid var(--accent-cyan); outline-offset: 3px; }
@@ -336,12 +375,21 @@ a { color: inherit; text-decoration: none; }
   transform: translate(-50%, calc(-100% - var(--notch-flare) - 8px));
 }
 
-/* Solid state — pages without a dark hero (static, top of page) */
+/* Solid state — pages without a dark hero (static, top of page).
+   Docked full-width so the bar meets the viewport edges (no top-corner gaps). */
 .notch-nav.solid {
+  width: 100%;
+  left: 0;
+  transform: none;
   background: rgba(0, 31, 61, 0.88);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   box-shadow: 0 10px 34px rgba(0, 0, 0, 0.28);
+}
+
+/* Hide-on-scroll must not use the -50% centering offset when docked */
+.notch-nav.solid.nav-hidden {
+  transform: translateY(calc(-100% - var(--notch-flare) - 8px));
 }
 
 /* Ear flares - concave curves on top corners */
@@ -367,13 +415,11 @@ a { color: inherit; text-decoration: none; }
   background: radial-gradient(circle at 100% 100%, transparent var(--notch-flare), rgba(0, 31, 61, 0.88) calc(var(--notch-flare) + 0.5px));
 }
 
-.notch-nav.solid::before,
-.notch-nav.solid::after {
-  opacity: 1;
-}
+/* Ear flares stay hidden on the docked solid bar (full-width — they would overflow the viewport) */
 
-/* Scrolled state — Apple-style frosted glass floating pill (scroll > 10px) */
-.notch-nav.scrolled {
+/* Scrolled state — Apple-style frosted glass floating pill (scroll > 10px).
+   Home (overlay) only: solid pages stay docked. */
+.notch-nav:not(.solid).scrolled {
   background: rgba(0, 0, 0, 0.55);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   backdrop-filter: saturate(180%) blur(20px);
@@ -384,13 +430,13 @@ a { color: inherit; text-decoration: none; }
   height: 48px;
 }
 
-.notch-nav.scrolled::before,
-.notch-nav.scrolled::after {
+.notch-nav:not(.solid).scrolled::before,
+.notch-nav:not(.solid).scrolled::after {
   opacity: 0;
 }
 
 @supports not ((backdrop-filter: blur(2px)) or (-webkit-backdrop-filter: blur(2px))) {
-  .notch-nav.scrolled {
+  .notch-nav:not(.solid).scrolled {
     background: rgba(0, 0, 0, 0.85);
   }
 }
@@ -435,7 +481,12 @@ a { color: inherit; text-decoration: none; }
   transition: color .4s var(--soft);
 }
 
-.notch-link:hover,
+@media (hover: hover) {
+  .notch-link:hover {
+    color: #ffffff;
+  }
+}
+
 .notch-link:focus-visible {
   color: #ffffff;
 }
@@ -477,8 +528,10 @@ a { color: inherit; text-decoration: none; }
   background: #ffffff;
 }
 
-.notch-nav.solid .notch-cta:hover {
-  color: var(--navy-darker);
+@media (hover: hover) {
+  .notch-nav.solid .notch-cta:hover {
+    color: var(--navy-darker);
+  }
 }
 
 /* ============================================================
@@ -613,14 +666,24 @@ a { color: inherit; text-decoration: none; }
   transition: color .5s var(--soft);
 }
 
-.fill-btn:hover,
+@media (hover: hover) {
+  .fill-btn:hover {
+    color: #ffffff;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 22px rgba(0, 0, 0, .25);
+  }
+
+  .fill-btn:hover::before {
+    top: -60%;
+  }
+}
+
 .fill-btn:focus-visible {
   color: #ffffff;
   transform: translateY(-4px);
   box-shadow: 0 12px 22px rgba(0, 0, 0, .25);
 }
 
-.fill-btn:hover::before,
 .fill-btn:focus-visible::before {
   top: -60%;
 }
@@ -644,14 +707,41 @@ a { color: inherit; text-decoration: none; }
   background: var(--accent-cyan);
 }
 
-.hero-cta:hover,
+@media (hover: hover) {
+  .hero-cta:hover {
+    color: var(--navy-darker);
+  }
+}
+
 .hero-cta:focus-visible {
   color: var(--navy-darker);
 }
 
 .hero-cta:focus-visible {
-  outline-color: var(--accent-cyan);
-}
+    outline-color: var(--accent-cyan);
+  }
+
+  /* Floating fill button on dark navy backgrounds (ASIT POS card).
+     Light border + light blob so it stays legible against --navy. */
+  .fill-btn-dark {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.55);
+  }
+
+  .fill-btn-dark::before {
+    background: var(--accent-cyan);
+  }
+
+  @media (hover: hover) {
+    .fill-btn-dark:hover {
+      color: var(--navy-darker);
+    }
+  }
+
+  .fill-btn-dark:focus-visible {
+    color: var(--navy-darker);
+    outline-color: var(--accent-cyan);
+  }
 
 /* Sliding pill — animation-only. Reuses the Contact button's white bg + radius.
    Fits the active link exactly (width/height from getBoundingClientRect). */
@@ -697,12 +787,14 @@ a { color: inherit; text-decoration: none; }
   color: var(--navy-darker);
 }
 
-.notch-nav .notch-cta:hover,
-.notch-nav .notch-cta:focus-visible {
-  color: var(--navy-darker);
+@media (hover: hover) {
+  .notch-nav .notch-cta:hover {
+    color: var(--navy-darker);
+  }
 }
 
 .notch-nav .notch-cta:focus-visible {
+  color: var(--navy-darker);
   outline-color: var(--accent-cyan);
 }
 
@@ -755,13 +847,16 @@ a { color: inherit; text-decoration: none; }
   transition: background 200ms var(--ease), color 200ms var(--ease);
 }
 
-.notch-mobile-link:hover,
-.notch-mobile-link:focus-visible {
-  background: var(--notch-panel-hover);
-  color: var(--notch-text);
+@media (hover: hover) {
+  .notch-mobile-link:hover {
+    background: var(--notch-panel-hover);
+    color: var(--notch-text);
+  }
 }
 
 .notch-mobile-link:focus-visible {
+  background: var(--notch-panel-hover);
+  color: var(--notch-text);
   outline: 2px solid var(--notch-text);
   outline-offset: 2px;
 }
@@ -783,10 +878,12 @@ a { color: inherit; text-decoration: none; }
   transition: transform 200ms var(--soft), box-shadow 200ms var(--ease), background 200ms var(--ease);
 }
 
-.notch-mobile-cta:hover {
-  transform: scale(1.02);
-  background: #000;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+@media (hover: hover) {
+  .notch-mobile-cta:hover {
+    transform: scale(1.02);
+    background: #000;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
 }
 
 .notch-mobile-cta:focus-visible {
@@ -872,7 +969,25 @@ a { color: inherit; text-decoration: none; }
 
 .svc-arrow { color: var(--text-muted); transition: transform 0.35s var(--soft), color 0.35s var(--soft); }
 
-.svc-row:hover,
+@media (hover: hover) {
+  .svc-row:hover {
+    background: var(--mid-blue);
+    color: #ffffff;
+    padding-left: 1.5rem;
+    outline: none;
+  }
+
+  .svc-row:hover .svc-num,
+  .svc-row:hover .svc-desc,
+  .svc-row:hover .svc-arrow {
+    color: rgba(255, 255, 255, 0.88);
+  }
+
+  .svc-row:hover .svc-arrow {
+    transform: translateX(6px);
+  }
+}
+
 .svc-row:focus-visible {
   background: var(--mid-blue);
   color: #ffffff;
@@ -880,16 +995,12 @@ a { color: inherit; text-decoration: none; }
   outline: none;
 }
 
-.svc-row:hover .svc-num,
-.svc-row:hover .svc-desc,
-.svc-row:hover .svc-arrow,
 .svc-row:focus-visible .svc-num,
 .svc-row:focus-visible .svc-desc,
 .svc-row:focus-visible .svc-arrow {
   color: rgba(255, 255, 255, 0.88);
 }
 
-.svc-row:hover .svc-arrow,
 .svc-row:focus-visible .svc-arrow {
   transform: translateX(6px);
 }
@@ -931,11 +1042,37 @@ a { color: inherit; text-decoration: none; }
 }
 
 .faq-a {
-  padding: 0 0.25rem 1.35rem;
+  display: grid;
+  grid-template-rows: 0fr;
   max-width: 60ch;
   font-size: 16px;
   line-height: 1.7;
   color: var(--text-muted);
+  transition: grid-template-rows 0.35s cubic-bezier(.22, 1, .36, 1);
+}
+
+.faq-a.open {
+  grid-template-rows: 1fr;
+}
+
+.faq-a-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.faq-a-content {
+  display: block;
+  padding: 0 0.25rem 1.35rem;
+}
+
+.faq-a:not(.open) .faq-a-content {
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-a {
+    transition: none;
+  }
 }
 
 /* ============================================================
@@ -957,7 +1094,7 @@ a { color: inherit; text-decoration: none; }
   .notch-nav.nav-hidden {
     transform: translateY(calc(-100% - var(--notch-flare) - 8px));
   }
-  .notch-nav.scrolled {
+  .notch-nav:not(.solid).scrolled {
     transform: translateY(12px);
     border-radius: 0;
   }
@@ -1032,5 +1169,221 @@ a { color: inherit; text-decoration: none; }
   /* Prevent horizontal overflow */
   html, body {
     overflow-x: hidden;
+  }
+}
+
+/* ============================================================
+   FLOATING WHATSAPP BUTTON — 56px round, bottom-right.
+   Fades in after scrolling 300px; green #25D366 with white
+   WhatsApp glyph. Fixed position above cookie banner.
+   ============================================================ */
+.wa-float {
+  position: fixed;
+  bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  right: 1.5rem;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #25D366;
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.45);
+  opacity: 0;
+  transform: translateY(16px) scale(0.8);
+  pointer-events: none;
+  transition:
+    opacity 0.4s cubic-bezier(.22, 1, .36, 1),
+    transform 0.4s cubic-bezier(.22, 1, .36, 1),
+    background 0.2s var(--ease),
+    box-shadow 0.2s var(--ease);
+  text-decoration: none;
+}
+
+.wa-float.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+@media (hover: hover) {
+  .wa-float:hover {
+    background: #1ebe6a;
+    transform: translateY(-2px) scale(1);
+    box-shadow: 0 12px 28px rgba(37, 211, 102, 0.55);
+  }
+}
+
+.wa-float:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px #25D366, 0 0 0 6px rgba(0, 0, 0, 0.15);
+}
+
+.wa-float:active {
+  transform: translateY(0) scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wa-float {
+    transition: none;
+  }
+}
+
+/* ============================================================
+   SCROLL PROGRESS BAR — 3px thin bar at the top of the viewport.
+   Width driven by the --scroll-progress custom property set in JS.
+   Decorative only (aria-hidden). Hidden in print.
+   ============================================================ */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 90;
+  width: 100%;
+  height: 3px;
+  pointer-events: none;
+}
+
+.scroll-progress::after {
+  content: "";
+  display: block;
+  height: 100%;
+  width: var(--scroll-progress, 0%);
+  background: var(--mid-blue);
+  transition: width 0.1s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress::after {
+    transition: none;
+  }
+}
+
+@media print {
+  .scroll-progress {
+    display: none !important;
+  }
+}
+
+/* ============================================================
+   BACK-TO-TOP BUTTON — 48px round, stacked 12px above the
+   WhatsApp float. Fades in after scrolling 400px.
+   ============================================================ */
+.back-to-top {
+  position: fixed;
+  bottom: calc(4.5rem + env(safe-area-inset-bottom));
+  right: 1.5rem;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(1, 42, 74, 0.35);
+  opacity: 0;
+  transform: translateY(16px) scale(0.8);
+  pointer-events: none;
+  cursor: pointer;
+  border: none;
+  transition:
+    opacity 0.4s cubic-bezier(.22, 1, .36, 1),
+    transform 0.4s cubic-bezier(.22, 1, .36, 1),
+    background 0.2s var(--ease),
+    box-shadow 0.2s var(--ease);
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+@media (hover: hover) {
+  .back-to-top:hover {
+    background: var(--deep-navy, #011f3a);
+    transform: translateY(-2px) scale(1);
+    box-shadow: 0 12px 28px rgba(1, 42, 74, 0.45);
+  }
+}
+
+.back-to-top:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--navy), 0 0 0 6px rgba(0, 0, 0, 0.15);
+}
+
+.back-to-top:active {
+  transform: translateY(0) scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back-to-top {
+    transition: none;
+  }
+}
+
+/* ============================================================
+   PRINT STYLES — hide interactive chrome, flatten dark surfaces,
+   avoid page breaks inside cards, and show link URLs.
+   ============================================================ */
+@media print {
+  /* Hide floating / interactive chrome */
+  .back-to-top,
+  .scroll-progress,
+  .skip-link,
+  nav[aria-label="Breadcrumb"] {
+    display: none !important;
+  }
+
+  /* Hide the sticky navbar */
+  header,
+  nav:not([aria-label="Breadcrumb"]) {
+    position: static !important;
+    box-shadow: none !important;
+  }
+
+  /* Flatten dark backgrounds to white for legibility */
+  body,
+  main {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Show link URLs for external links */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    color: #555;
+    word-break: break-all;
+  }
+
+  /* Avoid page breaks inside cards / sections */
+  section,
+  article,
+  .card,
+  h1,
+  h2,
+  h3 {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Expand all collapsible content */
+  details {
+    open: true;
+  }
+
+  /* Kill animations */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
   }
 }
