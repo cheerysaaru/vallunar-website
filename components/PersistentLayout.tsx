@@ -6,7 +6,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import UtmCapture from "@/components/UtmCapture";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
-import WhatsAppFloat from "@/components/WhatsAppFloat";
 import BackToTop from "@/components/BackToTop";
 import ScrollProgress from "@/components/ScrollProgress";
 
@@ -24,7 +23,6 @@ export default function PersistentLayout({ children }: { children: React.ReactNo
         {children}
       </main>
       <Footer />
-      <WhatsAppFloat />
       <BackToTop />
       <CookieConsentBanner />
     </>

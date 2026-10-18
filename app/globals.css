@@ -1332,7 +1332,6 @@ a { color: inherit; text-decoration: none; }
    ============================================================ */
 @media print {
   /* Hide floating / interactive chrome */
-  .wa-float,
   .back-to-top,
   .scroll-progress,
   .skip-link,
