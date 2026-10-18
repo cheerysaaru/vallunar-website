@@ -31,8 +31,14 @@ export default function Faq() {
                     </span>
                   </button>
                 </h3>
-                <div id={`faq-answer-${index}`} className="faq-a" hidden={!isOpen}>
-                  {faq.answer}
+                <div
+                  id={`faq-answer-${index}`}
+                  className={`faq-a${isOpen ? " open" : ""}`}
+                  inert={!isOpen}
+                >
+                  <div className="faq-a-inner">
+                    <span className="faq-a-content">{faq.answer}</span>
+                  </div>
                 </div>
               </div>
             );
