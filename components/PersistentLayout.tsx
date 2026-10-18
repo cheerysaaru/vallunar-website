@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import UtmCapture from "@/components/UtmCapture";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
+import BackToTop from "@/components/BackToTop";
 
 export default function PersistentLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -22,6 +23,7 @@ export default function PersistentLayout({ children }: { children: React.ReactNo
       </main>
       <Footer />
       <WhatsAppFloat />
+      <BackToTop />
       <CookieConsentBanner />
     </>
   );
