@@ -87,7 +87,7 @@ function FounderCard({ founder }: { founder: typeof founders[0] }) {
 
 export default function AboutPage() {
   return (
-    <main>
+    <div>
       {/* Hero Section */}
       <section id="top" className="relative isolate grid min-h-[60vh] place-items-center overflow-hidden bg-[radial-gradient(circle_at_50%_40%,var(--navy-dark)_0%,var(--navy)_45%,var(--navy-darker)_100%)] text-center px-6 py-20">
         <div className="relative z-10 max-w-3xl">
@@ -177,6 +177,6 @@ export default function AboutPage() {
       </section>
       </Reveal>
 
-      </main>
+      </div>
   );
 }

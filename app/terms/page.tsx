@@ -118,7 +118,7 @@ const sections = [
 
 export default function TermsPage() {
   return (
-    <main>
+    <div>
       <section id="top" className="mx-auto max-w-[1240px] px-6 pb-16 pt-32 lg:px-8">
         <nav aria-label="Breadcrumb" className="mb-9">
           <ol className="flex flex-wrap items-center gap-2 text-sm" style={{ color: "var(--text-muted)" }}>
@@ -156,6 +156,6 @@ export default function TermsPage() {
         </div>
       </section>
 
-      </main>
+      </div>
   );
 }

@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 
 export default function CaseStudiesPage() {
   return (
-    <main>
+    <div>
       <section id="top" className="bg-[var(--navy)] px-6 pb-16 pt-36 text-white lg:px-8">
         <div className="mx-auto max-w-[1240px]">
           <h1 className="display text-[clamp(2.25rem,5.5vw,3.75rem)] text-white">Case Studies</h1>
@@ -87,6 +87,6 @@ export default function CaseStudiesPage() {
       </section>
       </Reveal>
 
-      </main>
+      </div>
   );
 }
