@@ -13,6 +13,7 @@ import { contactConfig } from "@/lib/contact-config";
 import { getStoredUtm, type UtmParams } from "@/lib/utm";
 import {
   AREAS_OF_INTEREST,
+  LIMITS,
   validateArea,
   validateCompany,
   validateConsent,
@@ -149,6 +150,8 @@ function FormBody({
     const subscription = watch((values) => onDraft(values as FormValues));
     return () => subscription.unsubscribe();
   }, [watch, onDraft]);
+
+  const messageLength = (watch("message") || "").length;
 
   const runSubmit = async (values: FormValues) => {
     lastValuesRef.current = values;
@@ -299,6 +302,13 @@ function FormBody({
               {...register("message", { validate: validateMessage })}
             />
             {errors.message && <FieldError id="message" message={errors.message.message as string} />}
+            <p
+              aria-live="polite"
+              className="mt-1 text-right text-xs"
+              style={{ color: messageLength > LIMITS.message ? "var(--error)" : "var(--text-muted)" }}
+            >
+              {messageLength} / {LIMITS.message} characters
+            </p>
           </div>
         </div>
 
